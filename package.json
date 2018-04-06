@@ -1,0 +1,15 @@
+{
+  "name": "aws-lambda-nodejs-cms",
+  "version": "0.0.1",
+  "description": "NodeJS CMS for AWS Lambda serverless environment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^17.3.1",
+    "hapi-lambda": "^0.3.0"
+  }
+}

@@ -1,0 +1,13 @@
+service: aws-lambda-nodejs-cms
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+
+functions:
+  hello:
+    handler: index.hello
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
