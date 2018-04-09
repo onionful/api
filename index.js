@@ -1,5 +1,15 @@
-import hapiLambda from 'hapi-lambda';
-import api from './api';
+import middy from 'middy';
+import { urlEncodeBodyParser, httpErrorHandler, jsonBodyParser, cors } from 'middy/middlewares';
 
-hapiLambda.configure([api]);
-module.exports.hello = hapiLambda.handler;
+const processPayment = (event) => {
+  return Promise.resolve({ statusCode: 200, body: JSON.stringify(event) });
+};
+
+const handler = middy(processPayment)
+  .use(cors())
+  .use(jsonBodyParser())
+  .use(urlEncodeBodyParser())
+  .use(httpErrorHandler())
+;
+
+module.exports = { handler };

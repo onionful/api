@@ -1,13 +1,21 @@
-service: aws-lambda-nodejs-cms
+service: onionful-api
 
 provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
 
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
 functions:
   hello:
-    handler: index.hello
+    handler: index.handler
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http:
+          path: handler
+          method: get
+          cors: true
+#      - http: ANY /
+#      - http: 'ANY {proxy+}'
