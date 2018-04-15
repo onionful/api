@@ -1,11 +1,21 @@
 import middy from 'middy';
-import { urlEncodeBodyParser, httpErrorHandler, jsonBodyParser, cors } from 'middy/middlewares';
+import secrets from 'middy-secrets';
+import {
+  urlEncodeBodyParser,
+  httpErrorHandler,
+  jsonBodyParser,
+  cors,
+} from 'middy/middlewares';
 
-const processPayment = (event) => {
+const fn = (event) => {
   return Promise.resolve({ statusCode: 200, body: JSON.stringify(event) });
 };
 
-const handler = middy(processPayment)
+const handler = middy(fn)
+  .use(secrets({
+    region: 'eu-west-1',
+    secretName: 'dev/onionful',
+  }))
   .use(cors())
   .use(jsonBodyParser())
   .use(urlEncodeBodyParser())
