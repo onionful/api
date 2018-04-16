@@ -13,7 +13,6 @@ const fn = (event) => {
 
 const handler = middy(fn)
   .use(secrets({
-    region: 'eu-west-1',
     secretName: 'dev/onionful',
   }))
   .use(cors())
