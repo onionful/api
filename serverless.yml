@@ -1,21 +1,50 @@
-service: onionful-api
+service: Onionful
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
 
-plugins:
-  - serverless-offline
-  - serverless-webpack
+custom:
+  serverless-offline:
+    host: 0.0.0.0
 
 functions:
-  hello:
-    handler: index.handler
+  auth:
+    handler: src/auth.check
+    cors: true
+
+  usersList:
+    handler: src/users.list
     events:
       - http:
-          path: handler
+          path: users
+          method: get
+          authorizer: auth
+          cors: true
+
+  spacesCreate:
+    handler: src/spaces.create
+    events:
+      - http:
+          path: spaces
+          method: post
+          cors: true
+  spacesGet:
+    handler: src/spaces.get
+    events:
+      - http:
+          path: spaces/{id}
           method: get
           cors: true
-#      - http: ANY /
-#      - http: 'ANY {proxy+}'
+  spacesList:
+    handler: src/spaces.list
+    events:
+      - http:
+          path: spaces
+          method: get
+          cors: true
