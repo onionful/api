@@ -4,9 +4,6 @@ import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { errors, wrapper } from './utils';
 
-const { STAGE } = process.env;
-const wrapperOptions = { secretName: `${STAGE}/onionful`, raw: true };
-
 const generatePolicy = (principalId, Effect, Resource) => ({
   principalId,
   policyDocument: Effect && Resource ? {
@@ -63,12 +60,12 @@ const rotateToken = (params, { config: { auth0 } }) =>
   }, { headers: { 'content-type': 'application/json' } })
     .then(({ data: { access_token } }) =>
       new Promise((resolve, reject) => new AWS.SecretsManager().putSecretValue({
-        SecretId: `${STAGE}/onionful/token`,
-        SecretString: access_token,
+        SecretId: `${process.env.STAGE}/onionful/token`,
+        SecretString: JSON.stringify({ token: access_token }),
       }, (error, data) => (error ? reject(error) : resolve(data))))
     );
 
 module.exports = {
-  check: wrapper(check, wrapperOptions),
-  rotateToken: wrapper(rotateToken, wrapperOptions),
+  check: wrapper(check, { withConfig: true, raw: true }),
+  rotateToken: wrapper(rotateToken, { withConfig: true, raw: true }),
 };

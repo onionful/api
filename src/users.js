@@ -1,10 +1,7 @@
 import { wrapper } from './utils';
 
-const list = () => {
-  console.log('LIST USERS');
-  return ['foo', 'bar'];
-};
+const list = (params, { Auth0 }) => Auth0.getUsers();
 
 module.exports = {
-  list: wrapper(list),
+  list: wrapper(list, { withAuth0: true }),
 };

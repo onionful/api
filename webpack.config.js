@@ -1,4 +1,6 @@
+const path = require('path');
 const slsw = require('serverless-webpack');
+const webpack = require('webpack');
 
 module.exports = {
   entry: slsw.lib.entries,
@@ -11,5 +13,13 @@ module.exports = {
       include: __dirname,
       exclude: /node_modules/,
     }],
+  },
+  plugins: [
+    new webpack.DefinePlugin({ 'global.GENTLY': false }),
+  ],
+  resolve: {
+    alias: {
+      deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
+    },
   },
 };
