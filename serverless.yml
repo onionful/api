@@ -8,16 +8,27 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
 
 custom:
   serverless-offline:
     host: 0.0.0.0
 
 functions:
+  # auth
   auth:
     handler: src/auth.check
     cors: true
 
+  rotateToken:
+    handler: src/auth.rotateToken
+    cors: true
+    events:
+      - schedule: rate(12 hours)
+
+  # users
   usersList:
     handler: src/users.list
     events:
@@ -27,6 +38,7 @@ functions:
           authorizer: auth
           cors: true
 
+  # spaces
   spacesCreate:
     handler: src/spaces.create
     events:
