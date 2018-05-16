@@ -1,18 +1,34 @@
-import { ManagementClient } from 'auth0';
+import errors from 'http-errors';
 import middy from 'middy';
+import jwt from 'jsonwebtoken';
 import secrets from 'middy-secrets';
-import { cors, httpErrorHandler, jsonBodyParser, urlEncodeBodyParser } from 'middy/middlewares';
+import { mapKeys } from 'lodash';
+import { ManagementClient } from 'auth0';
+import {
+  cors,
+  httpErrorHandler,
+  httpEventNormalizer,
+  jsonBodyParser,
+  urlEncodeBodyParser,
+} from 'middy/middlewares';
 
 const { STAGE } = process.env;
 
-export default (fn, { raw = false, withConfig = false, withAuth0 = false } = {}) => {
+export default (fn, {
+  checkPermission = null,
+  raw = false,
+  withConfig = false,
+  withAuth0 = false,
+  withUser = false,
+} = {}) => {
   const handler = middy((...args) =>
     Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data })).catch(console.error)
   )
     .use(cors())
+    .use(httpErrorHandler())
+    .use(httpEventNormalizer())
     .use(jsonBodyParser())
-    .use(urlEncodeBodyParser())
-    .use(httpErrorHandler());
+    .use(urlEncodeBodyParser());
 
   if (withConfig || withAuth0) {
     handler.use(secrets({
@@ -33,6 +49,22 @@ export default (fn, { raw = false, withConfig = false, withAuth0 = false } = {})
       before: ({ context }, next) => {
         const { config: { auth0: { domain } = {} } = {}, Auth0Token: { token } = {} } = context;
         context.Auth0 = token && domain ? new ManagementClient({ token, domain }) : null;
+        next();
+      },
+    });
+  }
+
+  if (withUser || checkPermission) {
+    handler.use({
+      before: ({ context, event: { headers: { Authorization } } }, next) => {
+        const [, token] = Authorization.split(' ');
+        const domain = 'https://onionful.com/';
+        context.User = mapKeys(jwt.decode(token), (value, key) => key.replace(domain, ''));
+
+        if (checkPermission && !~context.User.permissions.indexOf(checkPermission)) {
+          throw new errors.Unauthorized(`User has no permission to invoke: ${checkPermission}`);
+        }
+
         next();
       },
     });
