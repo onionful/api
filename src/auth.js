@@ -13,10 +13,14 @@ const generatePolicy = (principalId, Effect, Resource) => ({
 });
 
 const check = ({ authorizationToken, methodArn }, { config }) => new Promise((resolve, reject) => {
+  if (process.env.IS_OFFLINE) {
+    return resolve(generatePolicy('offline', 'Allow', methodArn));
+  }
+
   const [bearer, token] = (authorizationToken || '').split(' ');
   if (!(bearer.toLowerCase() === 'bearer' && token)) {
     console.error('Invalid token', { bearer, token });
-    reject(new errors.Unauthorized());
+    return reject(new errors.Unauthorized());
   }
 
   const { header: { kid } } = jwt.decode(token, { complete: true });
@@ -29,7 +33,7 @@ const check = ({ authorizationToken, methodArn }, { config }) => new Promise((re
   }).getSigningKey(kid, (err, { publicKey, rsaPublicKey } = {}) => {
     if (err) {
       console.error('JWKS error', err);
-      reject(new errors.Unauthorized());
+      return reject(new errors.Unauthorized());
     }
 
     try {
@@ -40,9 +44,9 @@ const check = ({ authorizationToken, methodArn }, { config }) => new Promise((re
         if (verifyError) {
           console.error('VerifyError', verifyError);
           reject(new errors.Unauthorized());
+        } else {
+          resolve(generatePolicy(sub, 'Allow', methodArn));
         }
-
-        resolve(generatePolicy(sub, 'Allow', methodArn));
       });
     } catch (e) {
       console.error('JWT error', e);
