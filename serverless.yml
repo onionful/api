@@ -27,6 +27,10 @@ functions:
     cors: true
     events:
       - schedule: rate(12 hours)
+      - http:
+          path: rotate
+          method: get
+          cors: true
 
   # users
   usersList:

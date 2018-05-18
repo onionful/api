@@ -22,7 +22,7 @@ export default (fn, {
   withUser = false,
 } = {}) => {
   const handler = middy((...args) =>
-    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data })).catch(console.error)
+    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data }))
   )
     .use(cors())
     .use(httpErrorHandler())

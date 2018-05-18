@@ -1,9 +1,10 @@
 import dynamoose from 'dynamoose';
+import errors from 'http-errors';
 import Joi from 'joi';
 import { mapValues, isPlainObject, set } from 'lodash';
 
 dynamoose.setDefaults({
-  prefix: `${process.env.ENVIRONMENT}_`,
+  prefix: `${process.env.ENVIRONMENT}_Onionful_`,
 });
 
 const model = (table, schema, options = {}) => {
@@ -21,18 +22,16 @@ const model = (table, schema, options = {}) => {
       ...entry,
       validate: (value) => {
         const { error } = Joi.validate(set({}, _path, value), set({}, _path, entry.validator));
-        if (error) {
-          throw error;
+        if (error && error.details) {
+          throw new errors.BadRequest(error.details);
         }
         return true;
-      }
+      },
     };
   });
 
   return dynamoose.model(table, handleValidators(schema), {
     useDocumentTypes: true,
-    waitForActive: true,
-    waitForActiveTimeout: 180000,
     ...options,
   });
 };
