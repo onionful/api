@@ -45,6 +45,7 @@ functions:
       - http:
           path: spaces
           method: post
+          authorizer: auth
           cors: true
   spacesGet:
     handler: src/spaces.get

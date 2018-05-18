@@ -1,9 +1,11 @@
 import uuid from 'uuid';
-import { db, wrapper } from './utils';
+import { wrapper } from './utils';
 
 const TableName = process.env.DYNAMODB_TABLE || 'Onionful.Spaces';
 
 const create = ({ body }) => {
+  console.log('body', body);
+  return 'x';
   //const timestamp = new Date().getTime();
   //const Item = { ...body, id: uuid.v1(), createdAt: timestamp, updatedAt: timestamp };
   //return db.put({ TableName, Item }).promise().then(() => Item);
