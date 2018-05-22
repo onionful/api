@@ -1,16 +1,11 @@
+/* eslint-disable */
 import errors from 'http-errors';
 import middy from 'middy';
 import jwt from 'jsonwebtoken';
 import secrets from 'middy-secrets';
 import { mapKeys } from 'lodash';
 import { ManagementClient } from 'auth0';
-import {
-  cors,
-  httpErrorHandler,
-  httpEventNormalizer,
-  jsonBodyParser,
-  urlEncodeBodyParser,
-} from 'middy/middlewares';
+import { cors, httpEventNormalizer, jsonBodyParser, urlEncodeBodyParser } from 'middy/middlewares';
 
 const { STAGE } = process.env;
 
@@ -25,7 +20,6 @@ export default (fn, {
     Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data }))
   )
     .use(cors())
-    .use(httpErrorHandler())
     .use(httpEventNormalizer())
     .use(jsonBodyParser())
     .use(urlEncodeBodyParser());
@@ -69,6 +63,19 @@ export default (fn, {
       },
     });
   }
+
+  handler.use({
+    onError: ({ error: { statusCode: status, code: codeName, name, message }, response }, next) => {
+      const code = codeName || name;
+      const statusCode = status || (code === 'ValidationError' && 400) || 500;
+
+      Object.assign(response, {
+        statusCode,
+        body: JSON.stringify({ statusCode, code, message }),
+      });
+      return next();
+    },
+  });
 
   return handler;
 };

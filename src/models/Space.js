@@ -5,15 +5,20 @@ const { Joi, model } = db;
 export default model('Space', {
   id: {
     type: String,
-    validator: Joi.string().alphanum().min(3).required(),
     hashKey: true,
+    required: true,
+    validator: Joi.string()
+      .alphanum()
+      .min(3),
   },
   name: {
     type: String,
-    validator: Joi.string().required(),
+    required: true,
+    validator: Joi.string(),
   },
   createdBy: {
     type: String,
-    validator: Joi.string().required(),
+    required: true,
+    validator: Joi.string(),
   },
 });

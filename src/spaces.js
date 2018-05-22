@@ -1,9 +1,15 @@
 /* eslint-disable */
 import uuid from 'uuid/v4';
+import { kebabCase } from 'lodash';
 import { wrapper } from './utils';
 import { Space } from './models';
 
-const create = ({ body }) => Space.create(body);
+const create = ({ body: { name, createdBy } }) =>
+  Space.create({
+    id: kebabCase(name),
+    name,
+    createdBy,
+  });
 
 const update = ({ body, pathParameters: { id } }) => {
   //const timestamp = new Date().getTime();
@@ -16,14 +22,22 @@ const update = ({ body, pathParameters: { id } }) => {
   //}).promise().then(() => Item);
 };
 
-const get = ({ pathParameters: { id } }) => db.get({
-  TableName,
-  Key: { id },
-}).promise().then(({ Item }) => Item);
+const get = ({ pathParameters: { id } }) =>
+  db
+    .get({
+      TableName,
+      Key: { id },
+    })
+    .promise()
+    .then(({ Item }) => Item);
 
-const list = () => db.scan({
-  TableName,
-}).promise().then(({ Items }) => Items);
+const list = () =>
+  db
+    .scan({
+      TableName,
+    })
+    .promise()
+    .then(({ Items }) => Items);
 
 module.exports = {
   create: wrapper(create),

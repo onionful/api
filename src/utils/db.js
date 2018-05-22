@@ -8,29 +8,30 @@ dynamoose.setDefaults({
 });
 
 const model = (table, schema, options = {}) => {
-  const handleValidators = (subschema, path = []) => mapValues(subschema, (entry, key) => {
-    const nextPath = path.concat(key);
-    if (!isPlainObject(entry)) {
-      return entry;
-    }
+  const handleValidators = (subschema, path = []) =>
+    mapValues(subschema, (entry, key) => {
+      const nextPath = path.concat(key);
+      if (!isPlainObject(entry)) {
+        return entry;
+      }
 
-    if (!('validator' in entry)) {
-      return handleValidators(entry, nextPath);
-    }
+      if (!('validator' in entry)) {
+        return handleValidators(entry, nextPath);
+      }
 
-    const { validator, ...rest } = entry;
+      const { validator, ...rest } = entry;
 
-    return {
-      ...rest,
-      validate: (value) => {
-        const { error } = Joi.validate(set({}, nextPath, value), set({}, nextPath, validator));
-        if (error && error.details) {
-          throw new errors.BadRequest(error.details);
-        }
-        return true;
-      },
-    };
-  });
+      return {
+        ...rest,
+        validate: value => {
+          const { error } = Joi.validate(set({}, nextPath, value), set({}, nextPath, validator));
+          if (error && error.details) {
+            throw new errors.BadRequest(error.details);
+          }
+          return true;
+        },
+      };
+    });
 
   return dynamoose.model(table, handleValidators(schema), {
     useDocumentTypes: true,
