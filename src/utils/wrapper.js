@@ -1,4 +1,3 @@
-/* eslint-disable */
 import errors from 'http-errors';
 import middy from 'middy';
 import jwt from 'jsonwebtoken';
@@ -9,15 +8,18 @@ import { cors, httpEventNormalizer, jsonBodyParser, urlEncodeBodyParser } from '
 
 const { STAGE } = process.env;
 
-export default (fn, {
-  checkPermission = null,
-  raw = false,
-  withConfig = false,
-  withAuth0 = false,
-  withUser = false,
-} = {}) => {
+export default (
+  fn,
+  {
+    checkPermission = null,
+    raw = false,
+    withConfig = false,
+    withAuth0 = false,
+    withUser = false,
+  } = {},
+) => {
   const handler = middy((...args) =>
-    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data }))
+    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data })),
   )
     .use(cors())
     .use(httpEventNormalizer())
@@ -25,19 +27,23 @@ export default (fn, {
     .use(urlEncodeBodyParser());
 
   if (withConfig || withAuth0) {
-    handler.use(secrets({
-      secretName: `${STAGE}/onionful`,
-      setToContext: true,
-      contextKey: 'config',
-    }));
+    handler.use(
+      secrets({
+        secretName: `${STAGE}/onionful`,
+        setToContext: true,
+        contextKey: 'config',
+      }),
+    );
   }
 
   if (withAuth0) {
-    handler.use(secrets({
-      secretName: `${STAGE}/onionful/token`,
-      setToContext: true,
-      contextKey: 'Auth0Token',
-    }));
+    handler.use(
+      secrets({
+        secretName: `${STAGE}/onionful/token`,
+        setToContext: true,
+        contextKey: 'Auth0Token',
+      }),
+    );
 
     handler.use({
       before: ({ context }, next) => {
@@ -50,7 +56,15 @@ export default (fn, {
 
   if (withUser || checkPermission) {
     handler.use({
-      before: ({ context, event: { headers: { Authorization } } }, next) => {
+      before: (
+        {
+          context,
+          event: {
+            headers: { Authorization },
+          },
+        },
+        next,
+      ) => {
         const [, token] = Authorization.split(' ');
         const domain = 'https://onionful.com/';
         context.User = mapKeys(jwt.decode(token), (value, key) => key.replace(domain, ''));
