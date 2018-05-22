@@ -8,7 +8,7 @@ export default model('Space', {
     hashKey: true,
     required: true,
     validator: Joi.string()
-      .alphanum()
+      .token()
       .min(3),
   },
   name: {

@@ -1,47 +1,14 @@
-/* eslint-disable */
-import uuid from 'uuid/v4';
-import { kebabCase } from 'lodash';
+import { mapValues, snakeCase } from 'lodash';
 import { wrapper } from './utils';
 import { Space } from './models';
 
-const create = ({ body: { name, createdBy } }) =>
-  Space.create({
-    id: kebabCase(name),
-    name,
-    createdBy,
-  });
+const create = ({ body: { name, ...rest } }) =>
+  Space.create({ ...rest, id: snakeCase(name), name });
 
-const update = ({ body, pathParameters: { id } }) => {
-  //const timestamp = new Date().getTime();
-  //const Item = { ...body, id: uuid.v1(), createdAt: timestamp, updatedAt: timestamp };
-  //return db.put({
-  //  TableName,
-  //  Key: { id },
-  //  UpdateExpression: `set `,
-  //  Item,
-  //}).promise().then(() => Item);
-};
+const update = ({ body, pathParameters: { id } }) => Space.update({ id }, body);
 
-const get = ({ pathParameters: { id } }) =>
-  db
-    .get({
-      TableName,
-      Key: { id },
-    })
-    .promise()
-    .then(({ Item }) => Item);
+const get = ({ pathParameters: { id } }) => Space.get({ id });
 
-const list = () =>
-  db
-    .scan({
-      TableName,
-    })
-    .promise()
-    .then(({ Items }) => Items);
+const list = () => Space.scan().exec();
 
-module.exports = {
-  create: wrapper(create),
-  update: wrapper(update),
-  get: wrapper(get),
-  list: wrapper(list),
-};
+module.exports = mapValues({ create, update, get, list }, wrapper);

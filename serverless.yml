@@ -18,6 +18,7 @@ custom:
 
 functions:
   # auth
+
   auth:
     handler: src/auth.check
     cors: true
@@ -33,6 +34,7 @@ functions:
           cors: true
 
   # users
+
   usersList:
     handler: src/users.list
     events:
@@ -43,6 +45,7 @@ functions:
           cors: true
 
   # spaces
+
   spacesCreate:
     handler: src/spaces.create
     events:
@@ -51,6 +54,16 @@ functions:
           method: post
           authorizer: auth
           cors: true
+
+  spacesUpdate:
+    handler: src/spaces.update
+    events:
+      - http:
+          path: spaces/{id}
+          method: put
+          authorizer: auth
+          cors: true
+
   spacesGet:
     handler: src/spaces.get
     events:
@@ -58,6 +71,7 @@ functions:
           path: spaces/{id}
           method: get
           cors: true
+
   spacesList:
     handler: src/spaces.list
     events:
