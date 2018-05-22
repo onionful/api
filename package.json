@@ -19,18 +19,26 @@
     "jwks-rsa": "^1.2.1",
     "lodash": "^4.17.10",
     "middy": "^0.13.2",
-    "middy-secrets": "^0.2.0",
+    "middy-secrets": "^0.2.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "aws-sdk": "^2.242.1",
+    "aws-sdk": "^2.244.1",
+    "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.12.0",
     "serverless": "^1.27.2",
     "serverless-dynamodb-local": "^0.2.30",
     "serverless-offline": "^3.23.0",
     "serverless-webpack": "^5.1.5",
     "webpack": "^4.8.3"
+  },
+  "peerDependencies": {
+    "aws-sdk": "2.x"
   }
 }

@@ -1,10 +1,9 @@
+/* eslint-disable */
 import uuid from 'uuid/v4';
 import { wrapper } from './utils';
 import { Space } from './models';
 
-const create = ({ body }) => {
-  return Space.create({ ...body, id: uuid() });
-};
+const create = ({ body }) => Space.create(body);
 
 const update = ({ body, pathParameters: { id } }) => {
   //const timestamp = new Date().getTime();

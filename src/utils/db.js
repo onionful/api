@@ -9,19 +9,21 @@ dynamoose.setDefaults({
 
 const model = (table, schema, options = {}) => {
   const handleValidators = (subschema, path = []) => mapValues(subschema, (entry, key) => {
-    const _path = path.concat(key);
+    const nextPath = path.concat(key);
     if (!isPlainObject(entry)) {
       return entry;
     }
 
     if (!('validator' in entry)) {
-      return handleValidators(entry, _path);
+      return handleValidators(entry, nextPath);
     }
 
+    const { validator, ...rest } = entry;
+
     return {
-      ...entry,
+      ...rest,
       validate: (value) => {
-        const { error } = Joi.validate(set({}, _path, value), set({}, _path, entry.validator));
+        const { error } = Joi.validate(set({}, nextPath, value), set({}, nextPath, validator));
         if (error && error.details) {
           throw new errors.BadRequest(error.details);
         }
@@ -40,4 +42,4 @@ export default {
   model,
   dynamoose,
   Joi,
-}
+};

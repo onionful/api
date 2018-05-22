@@ -25,7 +25,7 @@ const check = ({ authorizationToken, methodArn }, { config }) => new Promise((re
 
   const { header: { kid } } = jwt.decode(token, { complete: true });
 
-  jwksClient({
+  return jwksClient({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 10,
@@ -37,7 +37,7 @@ const check = ({ authorizationToken, methodArn }, { config }) => new Promise((re
     }
 
     try {
-      jwt.verify(token, publicKey || rsaPublicKey, {
+      return jwt.verify(token, publicKey || rsaPublicKey, {
         audience: config.auth0.clientId,
         issuer: `https://${config.auth0.domain}/`,
       }, (verifyError, { sub } = {}) => {
@@ -50,7 +50,7 @@ const check = ({ authorizationToken, methodArn }, { config }) => new Promise((re
       });
     } catch (e) {
       console.error('JWT error', e);
-      reject(new errors.Unauthorized());
+      return reject(new errors.Unauthorized());
     }
   });
 });
@@ -62,10 +62,10 @@ const rotateToken = (params, { config: { auth0 } }) =>
     audience: `https://${auth0.domain}/api/v2/`,
     grant_type: 'client_credentials',
   }, { headers: { 'content-type': 'application/json' } })
-    .then(({ data: { access_token } }) =>
+    .then(({ data: { access_token: token } }) =>
       new Promise((resolve, reject) => new AWS.SecretsManager().putSecretValue({
         SecretId: `${process.env.STAGE}/onionful/token`,
-        SecretString: JSON.stringify({ token: access_token }),
+        SecretString: JSON.stringify({ token }),
       }, (error, data) => (error ? reject(error) : resolve(data))))
     );
 
