@@ -46,6 +46,42 @@ functions:
 
   # spaces
 
+  contentCreate:
+    handler: src/content.create
+    events:
+      - http:
+          path: content
+          method: post
+          authorizer: auth
+          cors: true
+
+  contentUpdate:
+    handler: src/content.update
+    events:
+      - http:
+          path: content/{slug}
+          method: put
+          authorizer: auth
+          cors: true
+
+  contentGet:
+    handler: src/content.get
+    events:
+      - http:
+          path: content/{slug}
+          method: get
+          cors: true
+
+  contentList:
+    handler: src/content.list
+    events:
+      - http:
+          path: content
+          method: get
+          cors: true
+
+  # spaces
+
   spacesCreate:
     handler: src/spaces.create
     events:

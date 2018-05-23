@@ -4,7 +4,13 @@ import jwt from 'jsonwebtoken';
 import { mapKeys } from 'lodash';
 import middy from 'middy';
 import secrets from 'middy-secrets';
-import { cors, httpEventNormalizer, jsonBodyParser, urlEncodeBodyParser } from 'middy/middlewares';
+import {
+  cors,
+  httpEventNormalizer,
+  httpHeaderNormalizer,
+  jsonBodyParser,
+  urlEncodeBodyParser,
+} from 'middy/middlewares';
 
 const { STAGE } = process.env;
 
@@ -23,6 +29,7 @@ export default (
   )
     .use(cors())
     .use(httpEventNormalizer())
+    .use(httpHeaderNormalizer())
     .use(jsonBodyParser())
     .use(urlEncodeBodyParser());
 
