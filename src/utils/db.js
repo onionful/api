@@ -1,7 +1,7 @@
 import dynamoose from 'dynamoose';
 import errors from 'http-errors';
 import Joi from 'joi';
-import { mapValues, isPlainObject, set } from 'lodash';
+import { isPlainObject, mapValues, set } from 'lodash';
 
 dynamoose.setDefaults({
   prefix: `${process.env.ENVIRONMENT}_Onionful_`,

@@ -2,23 +2,29 @@ import { db } from '../utils';
 
 const { Joi, model } = db;
 
-export default model('Space', {
-  id: {
-    type: String,
-    hashKey: true,
-    required: true,
-    validator: Joi.string()
-      .token()
-      .min(3),
+export default model(
+  'Space',
+  {
+    id: {
+      type: String,
+      hashKey: true,
+      required: true,
+      validator: Joi.string()
+        .token()
+        .min(3),
+    },
+    name: {
+      type: String,
+      required: true,
+      validator: Joi.string(),
+    },
+    createdBy: {
+      type: String,
+      required: true,
+      validator: Joi.string(),
+    },
   },
-  name: {
-    type: String,
-    required: true,
-    validator: Joi.string(),
+  {
+    timestamps: true,
   },
-  createdBy: {
-    type: String,
-    required: true,
-    validator: Joi.string(),
-  },
-});
+);

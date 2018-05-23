@@ -1,6 +1,6 @@
 import { mapValues, snakeCase } from 'lodash';
-import { wrapper } from './utils';
 import { Space } from './models';
+import { wrapper } from './utils';
 
 const create = ({ body: { name, ...rest } }) =>
   Space.create({ ...rest, id: snakeCase(name), name });

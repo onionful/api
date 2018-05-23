@@ -1,9 +1,9 @@
-import errors from 'http-errors';
-import middy from 'middy';
-import jwt from 'jsonwebtoken';
-import secrets from 'middy-secrets';
-import { mapKeys } from 'lodash';
 import { ManagementClient } from 'auth0';
+import errors from 'http-errors';
+import jwt from 'jsonwebtoken';
+import { mapKeys } from 'lodash';
+import middy from 'middy';
+import secrets from 'middy-secrets';
 import { cors, httpEventNormalizer, jsonBodyParser, urlEncodeBodyParser } from 'middy/middlewares';
 
 const { STAGE } = process.env;

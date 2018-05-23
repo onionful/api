@@ -17,7 +17,7 @@ const pagination = ({ limit, page, sort, order, q }) =>
 const list = ({ queryStringParameters }, { Auth0 }) =>
   Auth0.getUsers({
     ...pagination(queryStringParameters),
-    fields: 'email,name,nickname,picture,created_at,last_login,logins_count',
+    fields: 'email,name,nickname,picture,created_at,last_login,logins_count,identities',
   });
 
 module.exports = {
