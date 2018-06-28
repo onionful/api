@@ -1,5 +1,5 @@
 import { omitBy } from 'lodash';
-import { wrapper } from './utils';
+import { wrapper, userFields } from './utils';
 
 const pagination = ({ limit, page, sort, order, q }) =>
   omitBy(
@@ -15,10 +15,7 @@ const pagination = ({ limit, page, sort, order, q }) =>
   );
 
 const list = ({ queryStringParameters }, { Auth0 }) =>
-  Auth0.getUsers({
-    ...pagination(queryStringParameters),
-    fields: 'email,name,nickname,picture,created_at,last_login,logins_count,identities',
-  });
+  Auth0.getUsers({ ...pagination(queryStringParameters), fields: userFields.join() });
 
 module.exports = {
   list: wrapper(list, { withAuth0: true, checkPermission: 'users:list' }),

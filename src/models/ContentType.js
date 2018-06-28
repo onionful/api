@@ -1,9 +1,10 @@
 import { db } from '../utils';
 
 const { Joi, model } = db;
+export const TYPES = ['string', 'number', 'date'];
 
 export default model(
-  'Content',
+  'ContentType',
   {
     space: {
       type: String,
@@ -13,7 +14,7 @@ export default model(
         .token()
         .min(3),
     },
-    slug: {
+    id: {
       type: String,
       rangeKey: true,
       required: true,
@@ -24,26 +25,27 @@ export default model(
         .max(16)
         .truncate(),
     },
-    title: {
+    name: {
       type: String,
       required: true,
       validator: Joi.string(),
     },
-    content: {
+    description: {
       type: String,
-      required: true,
       validator: Joi.string(),
     },
-    tags: {
-      type: [String],
-      default: [],
-      validator: Joi.array().items(
-        Joi.string()
-          .lowercase()
-          .min(2)
-          .max(16)
-          .truncate(),
-      ),
+    fields: {
+      type: [Object],
+      validator: Joi.array()
+        .items(
+          Joi.object().keys({
+            type: Joi.string()
+              .allow(TYPES)
+              .required(),
+            required: Joi.boolean().required(),
+          }),
+        )
+        .required(),
     },
     createdBy: {
       type: String,

@@ -12,3 +12,15 @@ export const verify = {
     return data;
   },
 };
+
+export const userFields = [
+  'email',
+  'name',
+  'nickname',
+  'picture',
+  'created_at',
+  'last_login',
+  'logins_count',
+  'identities',
+  'user_metadata',
+];

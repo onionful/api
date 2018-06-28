@@ -33,6 +33,7 @@ functions:
           method: get
           cors: true
 
+
   # users
 
   usersList:
@@ -44,7 +45,66 @@ functions:
           authorizer: auth
           cors: true
 
-  # spaces
+
+  # profile
+
+  profileGet:
+    handler: src/profile.get
+    events:
+      - http:
+          path: profile
+          method: get
+          authorizer: auth
+          cors: true
+
+  profileUpdate:
+    handler: src/profile.update
+    events:
+      - http:
+          path: profile
+          method: put
+          authorizer: auth
+          cors: true
+
+
+  # contentType
+
+  contentTypeCreate:
+    handler: src/contentType.create
+    events:
+      - http:
+          path: content-type
+          method: post
+          authorizer: auth
+          cors: true
+
+  contentTypeUpdate:
+    handler: src/contentType.update
+    events:
+      - http:
+          path: content-type/{slug}
+          method: put
+          authorizer: auth
+          cors: true
+
+  contentTypeGet:
+    handler: src/contentType.get
+    events:
+      - http:
+          path: content-type/{id}
+          method: get
+          cors: true
+
+  contentTypeList:
+    handler: src/contentType.list
+    events:
+      - http:
+          path: content-type
+          method: get
+          cors: true
+
+
+  # content
 
   contentCreate:
     handler: src/content.create
@@ -79,6 +139,7 @@ functions:
           path: content
           method: get
           cors: true
+
 
   # spaces
 
