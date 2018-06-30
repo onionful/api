@@ -67,39 +67,39 @@ functions:
           cors: true
 
 
-  # contentType
+  # contentTypes
 
-  contentTypeCreate:
-    handler: src/contentType.create
+  contentTypesCreate:
+    handler: src/contentTypes.create
     events:
       - http:
-          path: content-type
+          path: content-types
           method: post
           authorizer: auth
           cors: true
 
-  contentTypeUpdate:
-    handler: src/contentType.update
+  contentTypesUpdate:
+    handler: src/contentTypes.update
     events:
       - http:
-          path: content-type/{slug}
+          path: content-types/{slug}
           method: put
           authorizer: auth
           cors: true
 
-  contentTypeGet:
-    handler: src/contentType.get
+  contentTypesGet:
+    handler: src/contentTypes.get
     events:
       - http:
-          path: content-type/{id}
+          path: content-types/{id}
           method: get
           cors: true
 
-  contentTypeList:
-    handler: src/contentType.list
+  contentTypesList:
+    handler: src/contentTypes.list
     events:
       - http:
-          path: content-type
+          path: content-types
           method: get
           cors: true
 
