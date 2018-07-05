@@ -26,24 +26,24 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "aws-sdk": "^2.266.1",
+    "aws-sdk": "^2.268.1",
     "babel-eslint": "^8.2.5",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^7.1.5",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "better-npm-run": "^0.1.0",
-    "eslint": "^4.19.1",
+    "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-prettier": "^2.6.1",
     "prettier": "^1.13.7",
-    "serverless": "^1.27.3",
+    "serverless": "^1.28.0",
     "serverless-dynamodb-local": "^0.2.30",
     "serverless-offline": "^3.25.5",
     "serverless-webpack": "^5.1.5",
-    "webpack": "^4.14.0"
+    "webpack": "^4.15.1"
   },
   "peerDependencies": {
     "aws-sdk": "2.x"
