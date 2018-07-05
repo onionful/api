@@ -12,7 +12,7 @@ import {
   urlEncodeBodyParser,
 } from 'middy/middlewares';
 
-const { STAGE } = process.env;
+const { STAGE, IS_OFFLINE, OFFLINE_CACHE_CONTROL = 0 } = process.env;
 
 export default (
   fn,
@@ -94,7 +94,17 @@ export default (
         statusCode,
         body: JSON.stringify({ statusCode, code, message }),
       });
-      return next();
+
+      next();
+    },
+    after: (h, next) => {
+      h.response.headers = h.response.headers || {};
+
+      if (IS_OFFLINE) {
+        h.response.headers['Cache-Control'] = `max-age=${OFFLINE_CACHE_CONTROL}`;
+      }
+
+      next();
     },
   });
 
