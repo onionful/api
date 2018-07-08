@@ -27,7 +27,8 @@ functions:
     handler: src/auth.rotateToken
     cors: true
     events:
-      - schedule: rate(12 hours)
+      - schedule:
+        rate: cron(0 0/8 * * *)
       - http:
           path: rotate
           method: get
