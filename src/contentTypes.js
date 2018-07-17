@@ -3,10 +3,10 @@ import { ContentType } from './models';
 import { errors, wrapper, verify } from './utils';
 
 const create = ({ headers: { Space: space }, body: { title, ...rest } }) =>
-  ContentType.create({ ...rest, title, slug: kebabCase(title), space });
+  ContentType.create({ ...rest, title, id: kebabCase(title), space });
 
-const update = ({ headers: { Space: space }, body, pathParameters: { slug } }) =>
-  ContentType.update({ space, slug }, body, { condition: 'attribute_exists(slug)' }).catch(
+const update = ({ headers: { Space: space }, body, pathParameters: { id } }) =>
+  ContentType.update({ space, id }, body, { condition: 'attribute_exists(id)' }).catch(
     ({ message }) => {
       throw new errors.NotFound(message);
     },

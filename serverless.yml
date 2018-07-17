@@ -83,7 +83,7 @@ functions:
     handler: src/contentTypes.update
     events:
       - http:
-          path: content-types/{slug}
+          path: content-types/{id}
           method: put
           authorizer: auth
           cors: true
