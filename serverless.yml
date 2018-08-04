@@ -15,6 +15,7 @@ provider:
 custom:
   serverless-offline:
     host: 0.0.0.0
+    port: 3002
 
 functions:
   # auth
@@ -105,39 +106,39 @@ functions:
           cors: true
 
 
-  # content
+  # contents
 
   contentCreate:
-    handler: src/content.create
+    handler: src/contents.create
     events:
       - http:
-          path: content
+          path: contents
           method: post
           authorizer: auth
           cors: true
 
   contentUpdate:
-    handler: src/content.update
+    handler: src/contents.update
     events:
       - http:
-          path: content/{slug}
+          path: contents/{id}
           method: put
           authorizer: auth
           cors: true
 
   contentGet:
-    handler: src/content.get
+    handler: src/contents.get
     events:
       - http:
-          path: content/{slug}
+          path: contents/{id}
           method: get
           cors: true
 
   contentList:
-    handler: src/content.list
+    handler: src/contents.list
     events:
       - http:
-          path: content
+          path: contents
           method: get
           cors: true
 

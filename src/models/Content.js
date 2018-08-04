@@ -13,10 +13,10 @@ export default model(
         .token()
         .min(3),
     },
-    slug: {
+    id: {
       type: String,
       rangeKey: true,
-      required: true,
+      required: false,
       validator: Joi.string()
         .regex(/^[a-z0-9-]+$/)
         .lowercase()
@@ -24,26 +24,10 @@ export default model(
         .max(16)
         .truncate(),
     },
-    title: {
-      type: String,
+    data: {
+      type: Object,
       required: true,
-      validator: Joi.string(),
-    },
-    content: {
-      type: String,
-      required: true,
-      validator: Joi.string(),
-    },
-    tags: {
-      type: [String],
-      default: [],
-      validator: Joi.array().items(
-        Joi.string()
-          .lowercase()
-          .min(2)
-          .max(16)
-          .truncate(),
-      ),
+      validator: Joi.object(),
     },
     createdBy: {
       type: String,
