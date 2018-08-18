@@ -10,10 +10,10 @@ const create = ({ headers: { Space: space }, body: { id, ...data } }) =>
 
 const update = ({ headers: { Space: space }, body, pathParameters: { id } }) =>
   Content.update({ space, id }, body, { condition: 'attribute_exists(id)' })
+    .then(parse)
     .catch(({ message }) => {
       throw new errors.NotFound(message);
-    })
-    .then(parse);
+    });
 
 const get = ({ headers: { Space: space }, pathParameters: { id } }) =>
   Content.get({ space, id })

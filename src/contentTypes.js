@@ -1,30 +1,28 @@
-import { kebabCase, mapValues } from 'lodash';
+import { mapValues } from 'lodash';
 import { ContentType } from './models';
-import { errors, wrapper, verify } from './utils';
+import { errors, verify, wrapper } from './utils';
 
-const create = ({ headers: { Space: space }, body: { title, ...rest } }) =>
-  ContentType.create({ ...rest, title, id: kebabCase(title), space });
+const parse = content => ({ fields: [], ...content });
+
+const create = ({ headers: { Space: space }, body }) =>
+  ContentType.create({ ...body, space }).then(parse);
 
 const update = ({ headers: { Space: space }, body, pathParameters: { id } }) =>
-  ContentType.update({ space, id }, body, { condition: 'attribute_exists(id)' }).catch(
-    ({ message }) => {
+  ContentType.update({ space, id }, body, { condition: 'attribute_exists(id)' })
+    .then(parse)
+    .catch(({ message }) => {
       throw new errors.NotFound(message);
-    },
-  );
+    });
 
 const get = ({ headers: { Space: space }, pathParameters: { id } }) =>
-  ContentType.get({ space, id }).then(verify.presence);
+  ContentType.get({ space, id })
+    .then(verify.presence)
+    .then(parse);
 
-const list = () =>
-  ContentType.scan()
+const list = ({ headers: { Space: space } }) =>
+  ContentType.query('space')
+    .eq(space)
     .exec()
-    .then(() => [
-      {
-        id: 'page',
-        name: 'Page',
-        description: 'Regular page type',
-        fields: [],
-      },
-    ]);
+    .then(items => items.map(parse));
 
 module.exports = mapValues({ create, update, get, list }, wrapper);
