@@ -23,4 +23,5 @@ export const userFields = [
   'logins_count',
   'identities',
   'user_metadata',
+  'user_id',
 ];
