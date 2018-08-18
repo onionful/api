@@ -38,19 +38,15 @@ export default model(
       type: [Object],
       validator: Joi.array()
         .items(
-          Joi.object().keys({
-            type: Joi.string()
-              .allow(TYPES)
-              .required(),
-            required: Joi.boolean().required(),
-          }),
+          Joi.object()
+            .keys({
+              type: Joi.string()
+                .allow(TYPES)
+                .required(),
+            })
+            .unknown(),
         )
         .required(),
-    },
-    createdBy: {
-      type: String,
-      required: true,
-      validator: Joi.string(),
     },
   },
   {
