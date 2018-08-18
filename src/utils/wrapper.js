@@ -86,13 +86,16 @@ export default (
   }
 
   handler.use({
-    onError: ({ error: { statusCode: status, code: codeName, name, message }, response }, next) => {
+    onError: (h, next) => {
+      const { statusCode: status, code: codeName, name, message } = h.error;
       const code = codeName || name;
       const statusCode = status || (code === 'ValidationError' && 400) || 500;
+      const body = { statusCode, code, message };
 
-      Object.assign(response, {
+      console.error(body);
+      h.response = Object.assign(h.response || {}, {
         statusCode,
-        body: JSON.stringify({ statusCode, code, message }),
+        body: JSON.stringify(body),
       });
 
       next();

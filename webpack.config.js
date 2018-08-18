@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   entry: slsw.lib.entries,
   target: 'node',
-  devtool: 'nosources-source-map',
+  devtool: 'source-map',
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   module: {
     rules: [
@@ -21,6 +21,15 @@ module.exports = {
         exclude: /node_modules/,
       },
     ],
+  },
+  optimization: {
+    minimize: false,
+  },
+  output: {
+    libraryTarget: 'commonjs2',
+    path: path.join(__dirname, '.webpack'),
+    filename: '[name].js',
+    sourceMapFilename: '[file].map',
   },
   plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
   resolve: {
