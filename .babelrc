@@ -1,5 +1,5 @@
 {
   "sourceMaps": "both",
-  "presets": ["env"],
-  "plugins": ["source-map-support", "transform-object-rest-spread"]
+  "presets": ["@babel/env"],
+  "plugins": ["source-map-support"]
 }

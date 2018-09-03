@@ -1,17 +1,17 @@
-import { mapValues, snakeCase } from 'lodash';
+import { snakeCase } from 'lodash';
 import { Space } from './models';
-import { errors, wrapper, verify } from './utils';
+import { errors, verify, wrapper } from './utils';
 
-const create = ({ body: { name, ...rest } }) =>
-  Space.create({ ...rest, id: snakeCase(name), name });
+export const create = wrapper(({ body: { name, ...rest } }) =>
+  Space.create({ ...rest, id: snakeCase(name), name }),
+);
 
-const update = ({ body, pathParameters: { id } }) =>
+export const update = wrapper(({ body, pathParameters: { id } }) =>
   Space.update({ id }, body, { condition: 'attribute_exists(id)' }).catch(({ message }) => {
     throw new errors.NotFound(message);
-  });
+  }),
+);
 
-const get = ({ pathParameters: { id } }) => Space.get({ id }).then(verify.presence);
+export const get = wrapper(({ pathParameters: { id } }) => Space.get({ id }).then(verify.presence));
 
-const list = () => Space.scan().exec();
-
-module.exports = mapValues({ create, update, get, list }, wrapper);
+export const list = wrapper(() => Space.scan().exec());

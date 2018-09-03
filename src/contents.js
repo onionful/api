@@ -1,29 +1,30 @@
-import { mapValues } from 'lodash';
 import uuid from 'uuid/v4';
 import { Content } from './models';
 import { errors, verify, wrapper } from './utils';
 
 const parse = content => content;
 
-const create = ({ headers: { Space: space }, body: { id, ...data } }) =>
-  Content.create({ ...data, id: id || uuid(), space }).then(parse);
+export const create = wrapper(({ headers: { Space: space }, body: { id, ...data } }) =>
+  Content.create({ ...data, id: id || uuid(), space }).then(parse),
+);
 
-const update = ({ headers: { Space: space }, body, pathParameters: { id } }) =>
+export const update = wrapper(({ headers: { Space: space }, body, pathParameters: { id } }) =>
   Content.update({ space, id }, body, { condition: 'attribute_exists(id)' })
     .then(parse)
     .catch(({ message }) => {
       throw new errors.NotFound(message);
-    });
+    }),
+);
 
-const get = ({ headers: { Space: space }, pathParameters: { id } }) =>
+export const get = wrapper(({ headers: { Space: space }, pathParameters: { id } }) =>
   Content.get({ space, id })
     .then(verify.presence)
-    .then(parse);
+    .then(parse),
+);
 
-const list = ({ headers: { Space: space } }) =>
+export const list = wrapper(({ headers: { Space: space } }) =>
   Content.query('space')
     .eq(space)
     .exec()
-    .then(items => items.map(parse));
-
-module.exports = mapValues({ create, update, get, list }, wrapper);
+    .then(items => items.map(parse)),
+);

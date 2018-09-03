@@ -15,83 +15,84 @@ const generatePolicy = (principalId, Effect, Resource) => ({
       : null,
 });
 
-const check = ({ authorizationToken, methodArn }, { config }) =>
-  new Promise((resolve, reject) => {
-    if (process.env.IS_OFFLINE) {
-      return resolve(generatePolicy('offline', 'Allow', methodArn));
-    }
+export const check = wrapper(
+  ({ authorizationToken, methodArn }, { config }) =>
+    new Promise((resolve, reject) => {
+      if (process.env.IS_OFFLINE) {
+        return resolve(generatePolicy('offline', 'Allow', methodArn));
+      }
 
-    const [bearer, token] = (authorizationToken || '').split(' ');
-    if (!(bearer.toLowerCase() === 'bearer' && token)) {
-      console.error('Invalid token', { bearer, token });
-      return reject(new errors.Unauthorized());
-    }
-
-    const {
-      header: { kid },
-    } = jwt.decode(token, { complete: true });
-
-    return jwksClient({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 10,
-      jwksUri: config.auth0.jwksUri,
-    }).getSigningKey(kid, (err, { publicKey, rsaPublicKey } = {}) => {
-      if (err) {
-        console.error('JWKS error', err);
+      const [bearer, token] = (authorizationToken || '').split(' ');
+      if (!(bearer.toLowerCase() === 'bearer' && token)) {
+        console.error('Invalid token', { bearer, token });
         return reject(new errors.Unauthorized());
       }
 
-      try {
-        return jwt.verify(
-          token,
-          publicKey || rsaPublicKey,
-          {
-            audience: config.auth0.clientId,
-            issuer: `https://${config.auth0.domain}/`,
-          },
-          (verifyError, { sub } = {}) => {
-            if (verifyError) {
-              console.error('VerifyError', verifyError);
-              reject(new errors.Unauthorized());
-            } else {
-              resolve(generatePolicy(sub, 'Allow', methodArn));
-            }
-          },
-        );
-      } catch (e) {
-        console.error('JWT error', e);
-        return reject(new errors.Unauthorized());
-      }
-    });
-  });
+      const {
+        header: { kid },
+      } = jwt.decode(token, { complete: true });
 
-const rotateToken = (params, { config: { auth0 } }) =>
-  axios
-    .post(
-      `https://${auth0.domain}/oauth/token`,
-      {
-        client_id: auth0.api.clientId,
-        client_secret: auth0.api.clientSecret,
-        audience: `https://${auth0.domain}/api/v2/`,
-        grant_type: 'client_credentials',
-      },
-      { headers: { 'content-type': 'application/json' } },
-    )
-    .then(
-      ({ data: { access_token: token } }) =>
-        new Promise((resolve, reject) =>
-          new AWS.SecretsManager().putSecretValue(
+      return jwksClient({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 10,
+        jwksUri: config.auth0.jwksUri,
+      }).getSigningKey(kid, (err, { publicKey, rsaPublicKey } = {}) => {
+        if (err) {
+          console.error('JWKS error', err);
+          return reject(new errors.Unauthorized());
+        }
+
+        try {
+          return jwt.verify(
+            token,
+            publicKey || rsaPublicKey,
             {
-              SecretId: `${process.env.STAGE}/onionful/token`,
-              SecretString: JSON.stringify({ token }),
+              audience: config.auth0.clientId,
+              issuer: `https://${config.auth0.domain}/`,
             },
-            (error, data) => (error ? reject(error) : resolve(data)),
-          ),
-        ),
-    );
+            (verifyError, { sub } = {}) => {
+              if (verifyError) {
+                console.error('VerifyError', verifyError);
+                reject(new errors.Unauthorized());
+              } else {
+                resolve(generatePolicy(sub, 'Allow', methodArn));
+              }
+            },
+          );
+        } catch (e) {
+          console.error('JWT error', e);
+          return reject(new errors.Unauthorized());
+        }
+      });
+    }),
+  { withConfig: true, raw: true },
+);
 
-module.exports = {
-  check: wrapper(check, { withConfig: true, raw: true }),
-  rotateToken: wrapper(rotateToken, { withConfig: true, raw: true }),
-};
+export const rotateToken = wrapper(
+  (params, { config: { auth0 } }) =>
+    axios
+      .post(
+        `https://${auth0.domain}/oauth/token`,
+        {
+          client_id: auth0.api.clientId,
+          client_secret: auth0.api.clientSecret,
+          audience: `https://${auth0.domain}/api/v2/`,
+          grant_type: 'client_credentials',
+        },
+        { headers: { 'content-type': 'application/json' } },
+      )
+      .then(
+        ({ data: { access_token: token } }) =>
+          new Promise((resolve, reject) =>
+            new AWS.SecretsManager().putSecretValue(
+              {
+                SecretId: `${process.env.STAGE}/onionful/token`,
+                SecretString: JSON.stringify({ token }),
+              },
+              (error, data) => (error ? reject(error) : resolve(data)),
+            ),
+          ),
+      ),
+  { withConfig: true, raw: true },
+);
