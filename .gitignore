@@ -8,3 +8,5 @@ jspm_packages
 .cache-loader
 .idea
 .env
+
+.secretsManager.json

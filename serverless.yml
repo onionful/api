@@ -1,31 +1,51 @@
-service: Onionful
+service: onionful
 
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-domain-manager
+  - serverless-aws-alias
 
 provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
-  stage: ${opt:stage, 'dev'}
+  stage: ${env:ENVIRONMENT, 'development'}
   environment:
     STAGE: ${self:provider.stage}
+  iamRoleStatements:
+    $ref: ./roleStatements.yml
+  apiName: ${self:service}
+  stackName: ${self:service}
 
 custom:
   serverless-offline:
     host: 0.0.0.0
-    port: 3002
+    port: ${env:PORT}
+  customDomain:
+    domainName: ${env:DOMAIN}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    endpointType: regional
+
+#resources:
+#  Resources:
+#    ApiGatewayRestApi:
+#      Type: AWS::ApiGateway::RestApi
+#      Properties:
+#        Name: ${self:service}
 
 functions:
   # auth
 
   auth:
     handler: src/auth.check
+    name: ${self:service}-auth
     cors: true
 
   rotateToken:
     handler: src/auth.rotateToken
+    name: ${self:service}-rotateToken
     cors: true
     events:
       - schedule:
@@ -41,6 +61,7 @@ functions:
 
   usersList:
     handler: src/users.list
+    name: ${self:service}-usersList
     events:
       - http:
           path: users
@@ -53,6 +74,7 @@ functions:
 
   profileGet:
     handler: src/profile.get
+    name: ${self:service}-profileGet
     events:
       - http:
           path: profile
@@ -62,6 +84,7 @@ functions:
 
   profileUpdate:
     handler: src/profile.update
+    name: ${self:service}-profileUpdate
     events:
       - http:
           path: profile
@@ -74,6 +97,7 @@ functions:
 
   contentTypesCreate:
     handler: src/contentTypes.create
+    name: ${self:service}-contentTypesCreate
     events:
       - http:
           path: content-types
@@ -83,6 +107,7 @@ functions:
 
   contentTypesUpdate:
     handler: src/contentTypes.update
+    name: ${self:service}-contentTypesUpdate
     events:
       - http:
           path: content-types/{id}
@@ -92,6 +117,7 @@ functions:
 
   contentTypesGet:
     handler: src/contentTypes.get
+    name: ${self:service}-contentTypesGet
     events:
       - http:
           path: content-types/{id}
@@ -100,6 +126,7 @@ functions:
 
   contentTypesList:
     handler: src/contentTypes.list
+    name: ${self:service}-contentTypesList
     events:
       - http:
           path: content-types
@@ -111,6 +138,7 @@ functions:
 
   contentCreate:
     handler: src/contents.create
+    name: ${self:service}-contentCreate
     events:
       - http:
           path: contents
@@ -120,6 +148,7 @@ functions:
 
   contentUpdate:
     handler: src/contents.update
+    name: ${self:service}-contentUpdate
     events:
       - http:
           path: contents/{id}
@@ -129,6 +158,7 @@ functions:
 
   contentGet:
     handler: src/contents.get
+    name: ${self:service}-contentGet
     events:
       - http:
           path: contents/{id}
@@ -137,6 +167,7 @@ functions:
 
   contentList:
     handler: src/contents.list
+    name: ${self:service}-contentList
     events:
       - http:
           path: contents
@@ -148,6 +179,7 @@ functions:
 
   spacesCreate:
     handler: src/spaces.create
+    name: ${self:service}-spacesCreate
     events:
       - http:
           path: spaces
@@ -157,6 +189,7 @@ functions:
 
   spacesUpdate:
     handler: src/spaces.update
+    name: ${self:service}-spacesUpdate
     events:
       - http:
           path: spaces/{id}
@@ -166,6 +199,7 @@ functions:
 
   spacesGet:
     handler: src/spaces.get
+    name: ${self:service}-spacesGet
     events:
       - http:
           path: spaces/{id}
@@ -174,6 +208,7 @@ functions:
 
   spacesList:
     handler: src/spaces.list
+    name: ${self:service}-spacesList
     events:
       - http:
           path: spaces
