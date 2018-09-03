@@ -1,22 +1,26 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
+const HappyPack = require('happypack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
+const {
+  lib: {
+    entries: entry,
+    webpack: { isLocal },
+  },
+} = slsw;
 
 module.exports = {
-  entry: slsw.lib.entries,
+  entry,
   target: 'node',
-  devtool: 'source-map',
-  mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
+  devtool: isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  mode: isLocal ? 'development' : 'production',
   module: {
     rules: [
       {
         test: /\.js$/,
-        loaders: [
-          { loader: 'cache-loader' },
-          { loader: 'thread-loader', options: { workers: require('os').cpus().length - 1 } },
-          { loader: 'babel-loader' },
-          { loader: 'eslint-loader' },
-        ],
+        use: 'happypack/loader',
         include: __dirname,
         exclude: /node_modules/,
       },
@@ -24,6 +28,9 @@ module.exports = {
   },
   optimization: {
     minimize: false,
+    removeAvailableModules: !isLocal,
+    removeEmptyChunks: !isLocal,
+    mergeDuplicateChunks: !isLocal,
   },
   output: {
     libraryTarget: 'commonjs2',
@@ -31,7 +38,16 @@ module.exports = {
     filename: '[name].js',
     sourceMapFilename: '[file].map',
   },
-  plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
+  plugins: [
+    new webpack.DefinePlugin({ 'global.GENTLY': false }),
+    new HappyPack({
+      loaders: [
+        { loader: 'babel-loader' },
+        { loader: 'eslint-loader' },
+      ],
+    }),
+    new HardSourceWebpackPlugin(),
+  ],
   resolve: {
     alias: {
       deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
