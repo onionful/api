@@ -25,7 +25,7 @@ export default (
   } = {},
 ) => {
   const handler = middy((...args) =>
-    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: data })),
+    Promise.resolve(fn(...args)).then(data => (raw ? data : { body: JSON.stringify(data) })),
   )
     .use(cors())
     .use(httpEventNormalizer())
