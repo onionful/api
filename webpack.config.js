@@ -1,6 +1,7 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const HappyPack = require('happypack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
@@ -14,8 +15,9 @@ const {
 module.exports = {
   entry,
   target: 'node',
-  devtool: isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  devtool: 'source-map',
   mode: isLocal ? 'development' : 'production',
+  externals: isLocal ? [nodeExternals()] : [],
   module: {
     rules: [
       {
@@ -41,10 +43,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new HappyPack({
-      loaders: [
-        { loader: 'babel-loader' },
-        { loader: 'eslint-loader' },
-      ],
+      loaders: [{ loader: 'babel-loader' }, { loader: 'eslint-loader' }],
     }),
     new HardSourceWebpackPlugin(),
   ],

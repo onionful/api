@@ -20,20 +20,13 @@ provider:
 
 custom:
   serverless-offline:
-    host: 0.0.0.0
-    port: ${env:PORT}
+    host: ${env:OFFLINE_HOST}
+    port: ${env:OFFLINE_PORT}
   customDomain:
     domainName: ${env:DOMAIN}
     stage: ${self:provider.stage}
     createRoute53Record: true
     endpointType: regional
-
-#resources:
-#  Resources:
-#    ApiGatewayRestApi:
-#      Type: AWS::ApiGateway::RestApi
-#      Properties:
-#        Name: ${self:service}
 
 functions:
   # auth
@@ -68,7 +61,6 @@ functions:
           method: get
           authorizer: auth
           cors: true
-
 
   # profile
 
