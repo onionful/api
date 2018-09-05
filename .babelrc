@@ -1,5 +1,20 @@
 {
-  "sourceMaps": "both",
-  "presets": ["@babel/env"],
-  "plugins": ["source-map-support"]
+  "sourceMaps": "inline",
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "8.10"
+        }
+      }
+    ]
+  ],
+  "plugins": ["source-map-support"],
+  "env": {
+    "production": {
+      "sourceMaps": "both",
+      "plugins": ["source-map-support"]
+    }
+  }
 }

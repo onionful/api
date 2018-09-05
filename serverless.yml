@@ -20,20 +20,13 @@ provider:
 
 custom:
   serverless-offline:
-    host: 0.0.0.0
-    port: ${env:PORT}
+    host: ${env:OFFLINE_HOST}
+    port: ${env:OFFLINE_PORT}
   customDomain:
     domainName: ${env:DOMAIN}
     stage: ${self:provider.stage}
     createRoute53Record: true
     endpointType: regional
-
-#resources:
-#  Resources:
-#    ApiGatewayRestApi:
-#      Type: AWS::ApiGateway::RestApi
-#      Properties:
-#        Name: ${self:service}
 
 functions:
   # auth
@@ -48,14 +41,13 @@ functions:
     name: ${self:service}-rotateToken
     cors: true
     events:
-      - schedule:
+      - ? schedule
         rate: cron(0 0/8 * * *)
       # TODO remove on production
       - http:
           path: rotate
           method: get
           cors: true
-
 
   # users
 
@@ -68,7 +60,6 @@ functions:
           method: get
           authorizer: auth
           cors: true
-
 
   # profile
 
@@ -92,12 +83,11 @@ functions:
           authorizer: auth
           cors: true
 
+  # collections
 
-  # contentTypes
-
-  contentTypesCreate:
-    handler: src/contentTypes.create
-    name: ${self:service}-contentTypesCreate
+  collectionsCreate:
+    handler: src/collections.create
+    name: ${self:service}-collectionsCreate
     events:
       - http:
           path: content-types
@@ -105,9 +95,9 @@ functions:
           authorizer: auth
           cors: true
 
-  contentTypesUpdate:
-    handler: src/contentTypes.update
-    name: ${self:service}-contentTypesUpdate
+  collectionsUpdate:
+    handler: src/collections.update
+    name: ${self:service}-collectionsUpdate
     events:
       - http:
           path: content-types/{id}
@@ -115,24 +105,23 @@ functions:
           authorizer: auth
           cors: true
 
-  contentTypesGet:
-    handler: src/contentTypes.get
-    name: ${self:service}-contentTypesGet
+  collectionsGet:
+    handler: src/collections.get
+    name: ${self:service}-collectionsGet
     events:
       - http:
           path: content-types/{id}
           method: get
           cors: true
 
-  contentTypesList:
-    handler: src/contentTypes.list
-    name: ${self:service}-contentTypesList
+  collectionsList:
+    handler: src/collections.list
+    name: ${self:service}-collectionsList
     events:
       - http:
           path: content-types
           method: get
           cors: true
-
 
   # contents
 
@@ -173,7 +162,6 @@ functions:
           path: contents
           method: get
           cors: true
-
 
   # spaces
 

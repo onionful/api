@@ -1,6 +1,7 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "extends": ["airbnb-base", "plugin:prettier/recommended", "plugin:jest/recommended"],
   "parser": "babel-eslint",
+  "plugins": ["jest"],
   "env": {
     "browser": true,
     "es6": true
@@ -19,7 +20,7 @@
     "react/no-typos": 0,
     "spaced-comment": 0
   },
-  "settings" : {
+  "settings": {
     "import/resolver": {
       "node": {
         "moduleDirectory": ["node_modules", "src"]

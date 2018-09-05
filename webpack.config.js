@@ -1,8 +1,10 @@
 const path = require('path');
+const fs = require('fs');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const HappyPack = require('happypack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+// const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const {
   lib: {
@@ -11,17 +13,37 @@ const {
   },
 } = slsw;
 
+const paths = {
+  context: __dirname,
+  babelrc: path.resolve(__dirname, '.babelrc'),
+  src: path.resolve(__dirname, 'src'),
+  node: path.resolve(__dirname, 'node_modules'),
+  webpackCache: path.resolve(__dirname, '.webpack'),
+};
+
+const babelConfig = JSON.parse(fs.readFileSync(paths.babelrc));
+
 module.exports = {
   entry,
   target: 'node',
-  devtool: isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  devtool: 'source-map',
   mode: isLocal ? 'development' : 'production',
+  context: paths.context,
+  resolve: {
+    modules: [paths.src, 'node_modules'],
+    extensions: ['.js'],
+    symlinks: false,
+    alias: {
+      deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
+    },
+  },
+  externals: isLocal ? [nodeExternals()] : [],
   module: {
     rules: [
       {
         test: /\.js$/,
         use: 'happypack/loader',
-        include: __dirname,
+        include: paths.src,
         exclude: /node_modules/,
       },
     ],
@@ -34,7 +56,7 @@ module.exports = {
   },
   output: {
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '.webpack'),
+    path: paths.webpackCache,
     filename: '[name].js',
     sourceMapFilename: '[file].map',
   },
@@ -42,15 +64,10 @@ module.exports = {
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new HappyPack({
       loaders: [
-        { loader: 'babel-loader' },
+        { loader: 'babel-loader', options: babelConfig, include: paths.src },
         { loader: 'eslint-loader' },
       ],
     }),
-    new HardSourceWebpackPlugin(),
+    // new HardSourceWebpackPlugin(),
   ],
-  resolve: {
-    alias: {
-      deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
-    },
-  },
 };
