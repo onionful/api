@@ -66,7 +66,7 @@ export const check = wrapper(
         }
       });
     }),
-  { withConfig: true, raw: true },
+  { withConfig: true, rawResponse: true },
 );
 
 export const rotateToken = wrapper(
@@ -94,5 +94,5 @@ export const rotateToken = wrapper(
             ),
           ),
       ),
-  { withConfig: true, raw: true },
+  { withConfig: true, rawResponse: true },
 );
