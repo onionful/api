@@ -90,7 +90,7 @@ functions:
     name: ${self:service}-collectionsCreate
     events:
       - http:
-          path: content-types
+          path: collections
           method: post
           authorizer: auth
           cors: true
@@ -100,7 +100,7 @@ functions:
     name: ${self:service}-collectionsUpdate
     events:
       - http:
-          path: content-types/{id}
+          path: collections/{id}
           method: put
           authorizer: auth
           cors: true
@@ -110,7 +110,7 @@ functions:
     name: ${self:service}-collectionsGet
     events:
       - http:
-          path: content-types/{id}
+          path: collections/{id}
           method: get
           cors: true
 
@@ -119,7 +119,7 @@ functions:
     name: ${self:service}-collectionsList
     events:
       - http:
-          path: content-types
+          path: collections
           method: get
           cors: true
 
