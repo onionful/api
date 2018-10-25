@@ -41,8 +41,8 @@ functions:
     name: ${self:service}-rotateToken
     cors: true
     events:
-      - ? schedule
-        rate: cron(0 0/8 * * *)
+      - schedule:
+          rate: cron(0 0/8 * * *)
       # TODO remove on production
       - http:
           path: rotate

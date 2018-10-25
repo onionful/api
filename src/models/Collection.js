@@ -4,7 +4,7 @@ const { Joi, model } = db;
 export const TYPES = ['string', 'number', 'date'];
 
 export default model(
-  'ContentType',
+  'Collection',
   {
     space: {
       type: String,
