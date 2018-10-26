@@ -43,6 +43,7 @@ export default model(
               type: Joi.string()
                 .allow(TYPES)
                 .required(),
+              order: Joi.number(),
             })
             .unknown(),
         )
