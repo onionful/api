@@ -85,6 +85,24 @@ functions:
 
   # collections
 
+  collectionsList:
+    handler: src/collections.list
+    name: ${self:service}-collectionsList
+    events:
+    - http:
+        path: collections
+        method: get
+        cors: true
+
+  collectionsGet:
+    handler: src/collections.get
+    name: ${self:service}-collectionsGet
+    events:
+    - http:
+        path: collections/{id}
+        method: get
+        cors: true
+
   collectionsCreate:
     handler: src/collections.create
     name: ${self:service}-collectionsCreate
@@ -105,22 +123,13 @@ functions:
           authorizer: auth
           cors: true
 
-  collectionsGet:
-    handler: src/collections.get
-    name: ${self:service}-collectionsGet
+  collectionsDelete:
+    handler: src/collections.remove
+    name: ${self:service}-collectionsDelete
     events:
       - http:
           path: collections/{id}
-          method: get
-          cors: true
-
-  collectionsList:
-    handler: src/collections.list
-    name: ${self:service}-collectionsList
-    events:
-      - http:
-          path: collections
-          method: get
+          method: delete
           cors: true
 
   # contents
