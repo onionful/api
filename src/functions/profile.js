@@ -1,6 +1,6 @@
 import { pick } from 'lodash';
-import { userFields, wrapper } from './utils';
-import validators from './validators';
+import { userFields, wrapper } from 'utils';
+import validators from 'validators';
 
 export const get = wrapper(
   (params, { Auth0, User: { sub: id, roles, permissions, groups } }) =>

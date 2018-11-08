@@ -1,6 +1,5 @@
-import uuid from 'uuid/v4';
-import { Content } from './models';
-import { errors, verify, wrapper } from './utils';
+import { Content } from 'models';
+import { errors, uuid, verify, wrapper } from 'utils';
 
 const parse = content => content;
 

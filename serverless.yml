@@ -32,17 +32,16 @@ functions:
   # auth
 
   auth:
-    handler: src/auth.check
+    handler: src/functions/auth.check
     name: ${self:service}-auth
     cors: true
 
   rotateToken:
-    handler: src/auth.rotateToken
+    handler: src/functions/auth.rotateToken
     name: ${self:service}-rotateToken
     cors: true
     events:
-      - schedule:
-          rate: cron(0 0/8 * * *)
+      - schedule: rate(8 hours)
       # TODO remove on production
       - http:
           path: rotate
@@ -52,7 +51,7 @@ functions:
   # users
 
   usersList:
-    handler: src/users.list
+    handler: src/functions/users.list
     name: ${self:service}-usersList
     events:
       - http:
@@ -64,7 +63,7 @@ functions:
   # profile
 
   profileGet:
-    handler: src/profile.get
+    handler: src/functions/profile.get
     name: ${self:service}-profileGet
     events:
       - http:
@@ -74,7 +73,7 @@ functions:
           cors: true
 
   profileUpdate:
-    handler: src/profile.update
+    handler: src/functions/profile.update
     name: ${self:service}-profileUpdate
     events:
       - http:
@@ -86,7 +85,7 @@ functions:
   # collections
 
   collectionsList:
-    handler: src/collections.list
+    handler: src/functions/collections.list
     name: ${self:service}-collectionsList
     events:
     - http:
@@ -95,7 +94,7 @@ functions:
         cors: true
 
   collectionsGet:
-    handler: src/collections.get
+    handler: src/functions/collections.get
     name: ${self:service}-collectionsGet
     events:
     - http:
@@ -104,7 +103,7 @@ functions:
         cors: true
 
   collectionsCreate:
-    handler: src/collections.create
+    handler: src/functions/collections.create
     name: ${self:service}-collectionsCreate
     events:
       - http:
@@ -114,7 +113,7 @@ functions:
           cors: true
 
   collectionsUpdate:
-    handler: src/collections.update
+    handler: src/functions/collections.update
     name: ${self:service}-collectionsUpdate
     events:
       - http:
@@ -124,7 +123,7 @@ functions:
           cors: true
 
   collectionsDelete:
-    handler: src/collections.remove
+    handler: src/functions/collections.remove
     name: ${self:service}-collectionsDelete
     events:
       - http:
@@ -135,7 +134,7 @@ functions:
   # contents
 
   contentCreate:
-    handler: src/contents.create
+    handler: src/functions/contents.create
     name: ${self:service}-contentCreate
     events:
       - http:
@@ -145,7 +144,7 @@ functions:
           cors: true
 
   contentUpdate:
-    handler: src/contents.update
+    handler: src/functions/contents.update
     name: ${self:service}-contentUpdate
     events:
       - http:
@@ -155,7 +154,7 @@ functions:
           cors: true
 
   contentGet:
-    handler: src/contents.get
+    handler: src/functions/contents.get
     name: ${self:service}-contentGet
     events:
       - http:
@@ -164,7 +163,7 @@ functions:
           cors: true
 
   contentList:
-    handler: src/contents.list
+    handler: src/functions/contents.list
     name: ${self:service}-contentList
     events:
       - http:
@@ -175,7 +174,7 @@ functions:
   # spaces
 
   spacesCreate:
-    handler: src/spaces.create
+    handler: src/functions/spaces.create
     name: ${self:service}-spacesCreate
     events:
       - http:
@@ -185,7 +184,7 @@ functions:
           cors: true
 
   spacesUpdate:
-    handler: src/spaces.update
+    handler: src/functions/spaces.update
     name: ${self:service}-spacesUpdate
     events:
       - http:
@@ -195,7 +194,7 @@ functions:
           cors: true
 
   spacesGet:
-    handler: src/spaces.get
+    handler: src/functions/spaces.get
     name: ${self:service}-spacesGet
     events:
       - http:
@@ -204,7 +203,7 @@ functions:
           cors: true
 
   spacesList:
-    handler: src/spaces.list
+    handler: src/functions/functions/spaces/list
     name: ${self:service}-spacesList
     events:
       - http:

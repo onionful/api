@@ -2,6 +2,7 @@ import errors from 'http-errors';
 import { isEmpty } from 'lodash';
 
 export { default as db } from './db';
+export { default as uuid } from 'uuid/v4';
 export { default as wrapper } from './wrapper';
 export { errors };
 

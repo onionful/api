@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import { errors, wrapper } from './utils';
+import { errors, wrapper } from 'utils';
 
 const generatePolicy = (principalId, Effect, Resource) => ({
   principalId,

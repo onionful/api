@@ -1,6 +1,6 @@
 import { snakeCase } from 'lodash';
-import { Space } from './models';
-import { errors, verify, wrapper } from './utils';
+import { Space } from 'models';
+import { errors, verify, wrapper } from 'utils';
 
 export const create = wrapper(({ body: { name, ...rest } }) =>
   Space.create({ ...rest, id: snakeCase(name), name }),

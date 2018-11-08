@@ -1,6 +1,6 @@
 import { kebabCase, sortBy } from 'lodash';
-import { Collection } from './models';
-import { verify, wrapper } from './utils';
+import { Collection } from 'models';
+import { verify, wrapper } from 'utils';
 
 const parse = ({ fields, ...content }) => ({
   fields: sortBy(fields || [], 'order').map(({ order, ...field }) => field),

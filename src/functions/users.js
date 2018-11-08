@@ -1,5 +1,5 @@
 import { omitBy } from 'lodash';
-import { wrapper, userFields } from './utils';
+import { userFields, wrapper } from 'utils';
 
 const pagination = ({ limit, page, sort, order, q }) =>
   omitBy(
