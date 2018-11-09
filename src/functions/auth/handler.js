@@ -90,9 +90,9 @@ export const rotateToken = wrapper(
                 SecretId: `${process.env.STAGE}/onionful/token`,
                 SecretString: JSON.stringify({ token }),
               },
-              (error, data) => (error ? reject(error) : resolve(data)),
+              error => (error ? reject(error) : resolve('OK')),
             ),
           ),
       ),
-  { withConfig: true, rawResponse: true },
+  { withConfig: true },
 );
