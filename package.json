@@ -51,16 +51,16 @@
     "eslint-plugin-prettier": "^3.0.0",
     "happypack": "^5.0.0",
     "hard-source-webpack-plugin": "^0.12.0",
+    "js-yaml": "latest",
     "prettier": "^1.15.1",
     "serverless": "^1.32.0",
     "serverless-aws-alias": "^1.7.1",
     "serverless-domain-manager": "^2.6.6",
-    "serverless-offline": "^3.31.1",
+    "serverless-offline": "^3.31.2",
     "serverless-plugin-parent": "0.0.3",
     "serverless-webpack": "^5.2.0",
     "webpack": "^4.25.1",
-    "webpack-node-externals": "^1.7.2",
-    "js-yaml": "latest"
+    "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {
     "aws-sdk": "2.x"
