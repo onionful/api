@@ -2,7 +2,7 @@ list:
   handler: handler.list
   events:
   - http:
-      path: users
+      path: /
       method: get
       authorizer: auth-check
       cors: true

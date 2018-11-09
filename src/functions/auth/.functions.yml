@@ -9,6 +9,6 @@ rotateToken:
   - schedule: rate(8 hours)
   # TODO remove on production
   - http:
-      path: rotate
+      path: /rotateToken
       method: get
       cors: true

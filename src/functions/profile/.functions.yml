@@ -2,7 +2,7 @@ get:
   handler: handler.get
   events:
   - http:
-      path: profile
+      path: /
       method: get
       authorizer: auth-check
       cors: true
@@ -11,7 +11,7 @@ update:
   handler: handler.update
   events:
   - http:
-      path: profile
+      path: /
       method: put
       authorizer: auth-check
       cors: true

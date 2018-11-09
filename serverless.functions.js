@@ -9,16 +9,15 @@ const paths = {
   functions: path.join(__dirname, 'src', 'functions'),
 };
 
-const fixAuthorizer = event =>
-  has(event, 'http.authorizer')
-    ? update(
-        event,
-        'http.authorizer',
-        value =>
-          (IS_OFFLINE ? '' : `arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:`) +
-          [SERVICE, value].join('-'),
-      )
-    : event;
+const fix = (key, cb) => event => (has(event, key) ? update(event, key, cb) : event);
+
+const fixPath = fn => fix('http.path', value => (IS_OFFLINE ? `${fn}${value}` : value));
+const fixAuthorizer = fix(
+  'http.authorizer',
+  value =>
+    (IS_OFFLINE ? '' : `arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:`) +
+    [SERVICE, value].join('-'),
+);
 
 const loadFunctions = name => {
   const file = path.join(paths.functions, name, '.functions.yml');
@@ -31,7 +30,7 @@ const loadFunctions = name => {
             ...fn,
             name: [SERVICE, name, key].join('-'),
             handler: path.join('src', 'functions', name, handler),
-            events: events.map(fixAuthorizer),
+            events: events.map(fixAuthorizer).map(fixPath(name)),
           }),
         ),
         fn => fn.name,
@@ -39,5 +38,7 @@ const loadFunctions = name => {
     : {};
 };
 
-const xxx = FUNCTION ? [FUNCTION] : fs.readdirSync(paths.functions);
-module.exports = merge({}, ...xxx.map(loadFunctions));
+module.exports = merge(
+  {},
+  ...(FUNCTION ? [FUNCTION] : fs.readdirSync(paths.functions)).map(loadFunctions),
+);

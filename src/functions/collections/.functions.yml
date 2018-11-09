@@ -2,7 +2,7 @@ list:
   handler: handler.list
   events:
   - http:
-      path: collections
+      path: /
       method: get
       cors: true
 
@@ -10,7 +10,7 @@ get:
   handler: handler.get
   events:
   - http:
-      path: collections/{id}
+      path: /{id}
       method: get
       cors: true
 
@@ -18,7 +18,7 @@ create:
   handler: handler.create
   events:
   - http:
-      path: collections
+      path: /
       method: post
       authorizer: auth-check
       cors: true
@@ -27,7 +27,7 @@ update:
   handler: handler.update
   events:
   - http:
-      path: collections/{id}
+      path: /{id}
       method: put
       authorizer: auth-check
       cors: true
@@ -36,6 +36,6 @@ delete:
   handler: handler.remove
   events:
   - http:
-      path: collections/{id}
+      path: /{id}
       method: delete
       cors: true
