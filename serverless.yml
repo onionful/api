@@ -203,7 +203,7 @@ functions:
           cors: true
 
   spacesList:
-    handler: src/functions/functions/spaces/list
+    handler: src/functions/spaces.list
     name: ${self:service}-spacesList
     events:
       - http:
