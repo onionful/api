@@ -16,7 +16,7 @@ const generatePolicy = (principalId, Effect, Resource) => ({
 });
 
 export const check = wrapper(
-  ({ authorizationToken, methodArn }, { config }) =>
+  ({ authorizationToken, methodArn }, { config: { auth0 } }) =>
     new Promise((resolve, reject) => {
       if (process.env.IS_OFFLINE) {
         return resolve(generatePolicy('offline', 'Allow', methodArn));
@@ -36,7 +36,7 @@ export const check = wrapper(
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 10,
-        jwksUri: config.auth0.jwksUri,
+        jwksUri: auth0.jwksUri,
       }).getSigningKey(kid, (err, { publicKey, rsaPublicKey } = {}) => {
         if (err) {
           console.error('JWKS error', err);
@@ -48,8 +48,8 @@ export const check = wrapper(
             token,
             publicKey || rsaPublicKey,
             {
-              audience: config.auth0.clientId,
-              issuer: `https://${config.auth0.domain}/`,
+              audience: auth0.clientId,
+              issuer: `https://${auth0.domain}/`,
             },
             (verifyError, { sub } = {}) => {
               if (verifyError) {

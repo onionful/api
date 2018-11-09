@@ -92,9 +92,8 @@ export default (
   });
 
   handler.after((h, next) => {
-    h.response.headers = h.response.headers || {};
-
     if (IS_OFFLINE) {
+      h.response.headers = h.response.headers || {};
       h.response.headers['Cache-Control'] = `max-age=${OFFLINE_CACHE_CONTROL}`;
     }
 

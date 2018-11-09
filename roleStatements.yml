@@ -1,5 +1,0 @@
-- Effect: Allow
-  Action:
-    - secretsmanager:GetSecretValue
-  Resource: "arn:aws:secretsmanager:${env:AWS_REGION}:${env:AWS_ACCOUNT_ID}:secret:${env:ENVIRONMENT}/onionful-*"
-  
