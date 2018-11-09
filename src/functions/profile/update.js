@@ -2,13 +2,7 @@ import { pick } from 'lodash';
 import { userFields, wrapper } from 'utils';
 import validators from 'validators';
 
-export const get = wrapper(
-  (params, { Auth0, User: { sub: id, roles, permissions, groups } }) =>
-    Auth0.getUser({ id }).then(user => ({ ...pick(user, userFields), roles, permissions, groups })),
-  { withAuth0: true, checkPermission: 'users:list' },
-);
-
-export const update = wrapper(
+export default wrapper(
   ({ body }, { Auth0, User: { sub: id } }) =>
     validators
       .UserAppMetadata(body)

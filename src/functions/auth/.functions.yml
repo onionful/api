@@ -1,9 +1,7 @@
 check:
-  handler: handler.check
   cors: true
 
 rotateToken:
-  handler: handler.rotateToken
   cors: true
   events:
   - schedule: rate(8 hours)

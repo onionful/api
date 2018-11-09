@@ -1,5 +1,4 @@
 list:
-  handler: handler.list
   events:
   - http:
       path: /

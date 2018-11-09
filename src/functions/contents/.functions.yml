@@ -1,5 +1,4 @@
 create:
-  handler: handler.create
   events:
   - http:
       path: /
@@ -8,7 +7,6 @@ create:
       cors: true
 
 update:
-  handler: handler.update
   events:
   - http:
       path: /{id}
@@ -17,7 +15,6 @@ update:
       cors: true
 
 get:
-  handler: handler.get
   events:
   - http:
       path: /{id}
@@ -25,7 +22,6 @@ get:
       cors: true
 
 list:
-  handler: handler.list
   events:
   - http:
       path: /

@@ -29,7 +29,7 @@ const loadFunctions = name => {
           ({ handler, events = [], ...fn }, key) => ({
             ...fn,
             name: [SERVICE, name, key].join('-'),
-            handler: path.join('src', 'functions', name, handler),
+            handler: path.join('src', 'functions', name, handler || `${key}.default`),
             events: events.map(fixAuthorizer).map(fixPath(name)),
           }),
         ),

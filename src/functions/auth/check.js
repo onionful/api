@@ -1,5 +1,3 @@
-import AWS from 'aws-sdk';
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { errors, wrapper } from 'utils';
@@ -15,7 +13,7 @@ const generatePolicy = (principalId, Effect, Resource) => ({
       : null,
 });
 
-export const check = wrapper(
+export default wrapper(
   ({ authorizationToken, methodArn }, { config: { auth0 } }) =>
     new Promise((resolve, reject) => {
       if (process.env.IS_OFFLINE) {
@@ -67,32 +65,4 @@ export const check = wrapper(
       });
     }),
   { withConfig: true, rawResponse: true },
-);
-
-export const rotateToken = wrapper(
-  (params, { config: { auth0 } }) =>
-    axios
-      .post(
-        `https://${auth0.domain}/oauth/token`,
-        {
-          client_id: auth0.api.clientId,
-          client_secret: auth0.api.clientSecret,
-          audience: `https://${auth0.domain}/api/v2/`,
-          grant_type: 'client_credentials',
-        },
-        { headers: { 'content-type': 'application/json' } },
-      )
-      .then(
-        ({ data: { access_token: token } }) =>
-          new Promise((resolve, reject) =>
-            new AWS.SecretsManager().putSecretValue(
-              {
-                SecretId: `${process.env.STAGE}/onionful/token`,
-                SecretString: JSON.stringify({ token }),
-              },
-              error => (error ? reject(error) : resolve('OK')),
-            ),
-          ),
-      ),
-  { withConfig: true },
 );

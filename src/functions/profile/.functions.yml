@@ -1,5 +1,4 @@
 get:
-  handler: handler.get
   events:
   - http:
       path: /
@@ -8,7 +7,6 @@ get:
       cors: true
 
 update:
-  handler: handler.update
   events:
   - http:
       path: /
