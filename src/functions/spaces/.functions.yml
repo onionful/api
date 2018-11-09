@@ -6,6 +6,14 @@ create:
       authorizer: auth-check
       cors: true
 
+delete:
+  events:
+  - http:
+      path: /{id}
+      method: delete
+      authorizer: auth-check
+      cors: true
+
 update:
   events:
   - http:
