@@ -15,8 +15,10 @@ const {
 const service = [SERVICE, FUNCTION].join('-');
 
 module.exports = {
-  service,
-  awsKmsKeyArn: AWS_KMS_KEY_ARN,
+  service: {
+    name: service,
+    awsKmsKeyArn: AWS_KMS_KEY_ARN,
+  },
   provider: {
     name: 'aws',
     runtime: 'nodejs8.10',
