@@ -18,6 +18,10 @@ export default model(
       required: true,
       validator: Joi.string(),
     },
+    url: {
+      type: String,
+      validator: Joi.string().uri(),
+    },
     createdBy: {
       type: String,
       required: true,
