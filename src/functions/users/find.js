@@ -2,7 +2,7 @@ import { userFields, wrapper, validators } from 'utils';
 
 export default wrapper(
   ({ pathParameters: { query: rawQuery } }, { Auth0 }) => {
-    const query = decodeURIComponent(query);
+    const query = decodeURIComponent(rawQuery);
 
     return validators.UserFind({ query }).then(() =>
       Auth0.getUsers({
