@@ -1,8 +1,10 @@
 import { userFields, wrapper, validators } from 'utils';
 
 export default wrapper(
-  ({ pathParameters: { query } }, { Auth0 }) =>
-    validators.UserFind({ query: decodeURIComponent(query) }).then(() =>
+  ({ pathParameters: { query: rawQuery } }, { Auth0 }) => {
+    const query = decodeURIComponent(query);
+
+    return validators.UserFind({ query }).then(() =>
       Auth0.getUsers({
         search_engine: 'v3',
         include_totals: true,
@@ -10,6 +12,7 @@ export default wrapper(
         fields: userFields.join(),
         q: `name:*${query}* OR email:*${query}*`,
       }),
-    ),
+    );
+  },
   { withAuth0: true, checkPermission: 'users:find' },
 );

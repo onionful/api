@@ -1,5 +1,7 @@
 import { Joi } from 'utils';
 
 export default {
-  query: Joi.string().min(3),
+  query: Joi.string()
+    .trim()
+    .min(3),
 };
