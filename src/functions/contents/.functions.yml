@@ -1,29 +1,29 @@
 create:
   events:
-  - http:
-      path: /
-      method: post
-      authorizer: auth-check
-      cors: true
+    - http:
+        path: /
+        method: post
+        authorizer: auth-check
+        cors: true
 
 update:
   events:
-  - http:
-      path: /{id}
-      method: put
-      authorizer: auth-check
-      cors: true
+    - http:
+        path: /{id}
+        method: put
+        authorizer: auth-check
+        cors: true
 
 get:
   events:
-  - http:
-      path: /{id}
-      method: get
-      cors: true
+    - http:
+        path: /{id}
+        method: get
+        cors: true
 
 list:
   events:
-  - http:
-      path: /
-      method: get
-      cors: true
+    - http:
+        path: /
+        method: get
+        cors: true

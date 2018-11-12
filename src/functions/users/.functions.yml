@@ -1,7 +1,7 @@
 list:
   events:
-  - http:
-      path: /
-      method: get
-      authorizer: auth-check
-      cors: true
+    - http:
+        path: /
+        method: get
+        authorizer: auth-check
+        cors: true

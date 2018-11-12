@@ -4,9 +4,9 @@ check:
 rotateToken:
   cors: true
   events:
-  - schedule: rate(8 hours)
-  # TODO remove on production
-  - http:
-      path: /rotateToken
-      method: get
-      cors: true
+    - schedule: rate(8 hours)
+    # TODO remove on production
+    - http:
+        path: /rotateToken
+        method: get
+        cors: true

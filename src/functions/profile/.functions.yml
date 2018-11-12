@@ -1,15 +1,15 @@
 get:
   events:
-  - http:
-      path: /
-      method: get
-      authorizer: auth-check
-      cors: true
+    - http:
+        path: /
+        method: get
+        authorizer: auth-check
+        cors: true
 
 update:
   events:
-  - http:
-      path: /
-      method: put
-      authorizer: auth-check
-      cors: true
+    - http:
+        path: /
+        method: put
+        authorizer: auth-check
+        cors: true
