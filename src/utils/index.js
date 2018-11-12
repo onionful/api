@@ -1,10 +1,20 @@
 import errors from 'http-errors';
-import { isEmpty } from 'lodash';
+import { get, isEmpty, template } from 'lodash';
+import messages from './messages';
 
-export { default as db } from './db';
 export { default as uuid } from 'uuid/v4';
+export { default as db } from './db';
 export { default as wrapper } from './wrapper';
 export { errors };
+
+/**
+ * Loads message from {@link messages} by given path and converts it using {@link template}.
+ *
+ * @param path string key
+ * @param params additional parameters
+ * @returns {string} converted message
+ */
+export const _ = (path, params = {}) => template(get(messages, path))(params);
 
 /**
  * Creates a verifier that throws given error if condition is met.
@@ -16,9 +26,9 @@ export { errors };
  *   condition = item => !item,
  * })
  *
- * @param error
- * @param message
- * @param condition
+ * @param error to throw
+ * @param message additional error message
+ * @param condition to check
  * @returns {function(*=): *}
  */
 export const verifier = ({ error, message, condition }) => item => {

@@ -1,7 +1,8 @@
 import { Collection } from 'models';
-import { wrapper } from 'utils';
-import { parse } from './.helpers';
+import { verify, wrapper } from 'utils';
 
 export default wrapper(({ headers: { Space: space }, pathParameters: { id } }) =>
-  Collection.delete({ space, id }).then(parse),
+  Collection.get({ space, id })
+    .then(verify.presence)
+    .then(() => Collection.delete({ space, id })),
 );
