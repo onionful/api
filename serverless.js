@@ -1,9 +1,8 @@
 const functions = require('./serverless.functions');
+const iamRoleStatements = require('./serverless.iamRoleStatements');
 
 const {
-  AWS_ACCOUNT_ID,
   AWS_KMS_KEY_ARN,
-  AWS_REGION,
   FUNCTION,
   DOMAIN,
   ENVIRONMENT = 'development',
@@ -25,13 +24,7 @@ module.exports = {
     region: 'eu-west-1',
     stage: ENVIRONMENT,
     environment: { ENVIRONMENT },
-    iamRoleStatements: [
-      {
-        Effect: 'Allow',
-        Action: ['secretsmanager:GetSecretValue'],
-        Resource: `arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:${ENVIRONMENT}/onionful*`,
-      },
-    ],
+    iamRoleStatements,
     apiName: service,
     stackName: service,
   },
