@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { errors, wrapper } from 'utils';
 
+const { IS_OFFLINE } = process.env;
+
 const generatePolicy = (principalId, Effect, Resource) => ({
   principalId,
   policyDocument:
@@ -16,7 +18,7 @@ const generatePolicy = (principalId, Effect, Resource) => ({
 export default wrapper(
   ({ authorizationToken, methodArn }, { config: { auth0 } }) =>
     new Promise((resolve, reject) => {
-      if (process.env.IS_OFFLINE) {
+      if (IS_OFFLINE) {
         return resolve(generatePolicy('offline', 'Allow', methodArn));
       }
 

@@ -3,8 +3,10 @@ import errors from 'http-errors';
 import Joi from 'joi';
 import { isPlainObject, mapValues, set } from 'lodash';
 
+const { ENVIRONMENT } = process.env;
+
 dynamoose.setDefaults({
-  prefix: `${process.env.ENVIRONMENT}_Onionful_`,
+  prefix: `${ENVIRONMENT}_Onionful_`,
 });
 
 const model = (table, schema, options = {}) => {
