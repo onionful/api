@@ -24,7 +24,7 @@ module.exports = {
     runtime: 'nodejs8.10',
     region: 'eu-west-1',
     stage: ENVIRONMENT,
-    environment: { STAGE: ENVIRONMENT },
+    environment: { ENVIRONMENT },
     iamRoleStatements: [
       {
         Effect: 'Allow',

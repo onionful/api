@@ -2,6 +2,8 @@ import AWS from 'aws-sdk';
 import axios from 'axios';
 import { wrapper } from 'utils';
 
+const { ENVIRONMENT } = process.env;
+
 export default wrapper(
   (params, { config: { auth0 } }) =>
     axios
@@ -20,7 +22,7 @@ export default wrapper(
           new Promise((resolve, reject) =>
             new AWS.SecretsManager().putSecretValue(
               {
-                SecretId: `${process.env.STAGE}/onionful/token`,
+                SecretId: `${ENVIRONMENT}/onionful/token`,
                 SecretString: JSON.stringify({ token }),
               },
               error => (error ? reject(error) : resolve('OK')),

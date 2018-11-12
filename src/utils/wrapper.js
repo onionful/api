@@ -14,7 +14,7 @@ import {
 
 process.on('unhandledRejection', console.error); // print stacktrace for unhandled promises rejection
 
-const { STAGE, IS_OFFLINE, OFFLINE_CACHE_CONTROL = 0 } = process.env;
+const { ENVIROMENT, IS_OFFLINE, OFFLINE_CACHE_CONTROL = 0 } = process.env;
 const transformResponse = raw => data => (raw ? data : { body: JSON.stringify(data) });
 
 export default (
@@ -38,10 +38,10 @@ export default (
 
   const secrets = {};
   if (withConfig || withAuth0) {
-    Object.assign(secrets, { config: `${STAGE}/onionful` });
+    Object.assign(secrets, { config: `${ENVIROMENT}/onionful` });
   }
   if (withAuth0) {
-    Object.assign(secrets, { Auth0Token: `${STAGE}/onionful/token` });
+    Object.assign(secrets, { Auth0Token: `${ENVIROMENT}/onionful/token` });
   }
   handler.use(secretsManager({ cache: true, secrets }));
 
