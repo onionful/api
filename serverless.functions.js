@@ -12,11 +12,16 @@ const paths = {
 const fix = (key, cb) => event => (has(event, key) ? update(event, key, cb) : event);
 
 const fixPath = fn => fix('http.path', value => (IS_OFFLINE ? `${fn}${value}` : value));
-const fixAuthorizer = fix(
-  'http.authorizer',
-  value =>
-    (IS_OFFLINE ? '' : `arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:`) +
-    [SERVICE, value].join('-'),
+const fixAuthorizer = fix('http.authorizer', value =>
+  IS_OFFLINE
+    ? [SERVICE, value].join('-')
+    : {
+        arn: `arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:${SERVICE}-${value}`,
+        type: 'request',
+        name: 'authorizer',
+        identitySource: 'method.request.header.Authorizer',
+        resultTtlInSeconds: 600,
+      },
 );
 
 const loadFunctions = name => {
