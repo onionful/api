@@ -1,4 +1,4 @@
-import { db } from '../utils';
+import { db } from 'utils';
 
 const { Joi, model } = db;
 export const TYPES = ['string', 'number', 'date'];
@@ -18,12 +18,7 @@ export default model(
       type: String,
       rangeKey: true,
       required: true,
-      validator: Joi.string()
-        .regex(/^[a-z0-9-]+$/)
-        .lowercase()
-        .min(3)
-        .max(16)
-        .truncate(),
+      validator: Joi.id(),
     },
     name: {
       type: String,

@@ -1,4 +1,4 @@
-import { db } from '../utils';
+import { db } from 'utils';
 
 const { Joi, model } = db;
 
@@ -9,9 +9,7 @@ export default model(
       type: String,
       hashKey: true,
       required: true,
-      validator: Joi.string()
-        .token()
-        .min(3),
+      validator: Joi.id(),
     },
     name: {
       type: String,
