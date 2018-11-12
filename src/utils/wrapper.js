@@ -1,7 +1,5 @@
 import { ManagementClient } from 'auth0';
 import errors from 'http-errors';
-import jwt from 'jsonwebtoken';
-import { mapKeys } from 'lodash';
 import middy from 'middy';
 import {
   cors,
@@ -11,6 +9,7 @@ import {
   secretsManager,
   urlEncodeBodyParser,
 } from 'middy/middlewares';
+import { permissions } from 'utils';
 
 process.on('unhandledRejection', console.error); // print stacktrace for unhandled promises rejection
 
@@ -19,13 +18,7 @@ const transformResponse = raw => data => (raw ? data : { body: JSON.stringify(da
 
 export default (
   fn,
-  {
-    checkPermission = null,
-    rawResponse = false,
-    withConfig = false,
-    withAuth0 = false,
-    withUser = false,
-  } = {},
+  { checkPermission = null, rawResponse = false, withConfig = false, withAuth0 = false } = {},
 ) => {
   const handler = middy((...args) =>
     Promise.resolve(fn(...args)).then(transformResponse(rawResponse)),
@@ -35,6 +28,15 @@ export default (
     .use(httpHeaderNormalizer())
     .use(jsonBodyParser())
     .use(urlEncodeBodyParser());
+
+  handler.before(({ event }, next) => {
+    const { requestContext: { authorizer = {} } = {} } = event;
+    ['permissions', 'groups', 'roles'].forEach(key => {
+      authorizer[key] = (authorizer[key] || '').split(',').filter(v => v);
+    });
+    event.user = { ...authorizer, id: authorizer.sub };
+    next();
+  });
 
   const secrets = {};
   if (withConfig || withAuth0) {
@@ -59,20 +61,12 @@ export default (
     });
   }
 
-  if (withUser || checkPermission) {
-    handler.before(({ context, event: { headers: { Authorization = '' } = {} } }, next) => {
-      const [, token] = Authorization.split(' ');
-      const domain = 'https://onionful.com/';
-      context.User = mapKeys(jwt.decode(token), (value, key) => key.replace(domain, ''));
-
-      if (
-        checkPermission &&
-        context.User.permissions &&
-        !~context.User.permissions.indexOf(checkPermission)
-      ) {
-        throw new errors.Unauthorized(`User has no permission to invoke: ${checkPermission}`);
+  if (checkPermission) {
+    handler.before(({ event: { user } }, next) => {
+      if (permissions.can(user, checkPermission)) {
+        return next();
       }
-      next();
+      throw new errors.Unauthorized(`User has no permission to invoke: ${checkPermission}`);
     });
   }
 

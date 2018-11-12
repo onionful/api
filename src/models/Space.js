@@ -1,8 +1,6 @@
-import { db } from 'utils';
+import { db, Joi } from 'utils';
 
-const { Joi, model } = db;
-
-export default model(
+export default db.model(
   'Space',
   {
     id: {
@@ -19,6 +17,18 @@ export default model(
     url: {
       type: String,
       validator: Joi.string().uri(),
+    },
+    owners: {
+      type: [String],
+      validator: Joi.array()
+        .items(Joi.string())
+        .required(),
+    },
+    users: {
+      type: [String],
+      validator: Joi.array()
+        .items(Joi.string())
+        .required(),
     },
     createdBy: {
       type: String,

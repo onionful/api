@@ -1,9 +1,8 @@
 import { pick } from 'lodash';
-import { userFields, wrapper } from 'utils';
-import validators from 'validators';
+import { userFields, validators, wrapper } from 'utils';
 
 export default wrapper(
-  ({ body }, { Auth0, User: { sub: id } }) =>
+  ({ body, user: { id } }, { Auth0 }) =>
     validators
       .UserAppMetadata(body)
       .then(metadata => Auth0.updateUserMetadata({ id }, metadata))

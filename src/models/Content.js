@@ -1,8 +1,6 @@
-import { db } from 'utils';
+import { db, Joi } from 'utils';
 
-const { Joi, model } = db;
-
-export default model(
+export default db.model(
   'Content',
   {
     space: {

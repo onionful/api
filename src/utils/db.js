@@ -1,7 +1,7 @@
 import dynamoose from 'dynamoose';
 import errors from 'http-errors';
-import Joi from 'joi';
 import { isPlainObject, mapValues, set } from 'lodash';
+import Joi from './joi';
 
 const { ENVIRONMENT } = process.env;
 
@@ -41,19 +41,7 @@ const model = (table, schema, options = {}) => {
   });
 };
 
-const ExtendedJoi = Joi.extend(joi => ({
-  name: 'id',
-  base: joi
-    .string()
-    .regex(/^[a-z0-9-]+$/)
-    .lowercase()
-    .min(3)
-    .max(16)
-    .truncate(),
-}));
-
 export default {
   model,
   dynamoose,
-  Joi: ExtendedJoi,
 };

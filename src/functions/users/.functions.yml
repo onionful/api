@@ -5,3 +5,11 @@ list:
         method: get
         authorizer: auth-check
         cors: true
+
+find:
+  events:
+  - http:
+      path: /find/{query}
+      method: get
+      authorizer: auth-check
+      cors: true

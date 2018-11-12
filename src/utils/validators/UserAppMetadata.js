@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import { Joi } from 'utils';
 
 export default {
   space: Joi.string()

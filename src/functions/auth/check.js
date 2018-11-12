@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
+import { isArray, mapKeys, mapValues } from 'lodash';
 import { errors, wrapper } from 'utils';
 
 const { IS_OFFLINE } = process.env;
 
-const generatePolicy = (principalId, Effect, Resource) => ({
+const generatePolicy = (principalId, Effect, Resource, context = {}) => ({
+  context,
   principalId,
   policyDocument:
     Effect && Resource
@@ -19,7 +21,7 @@ export default wrapper(
   ({ authorizationToken, methodArn }, { config: { auth0 } }) =>
     new Promise((resolve, reject) => {
       if (IS_OFFLINE) {
-        return resolve(generatePolicy('offline', 'Allow', methodArn));
+        // return resolve(generatePolicy('offline', 'Allow', methodArn));
       }
 
       const [bearer, token] = (authorizationToken || '').split(' ');
@@ -51,12 +53,17 @@ export default wrapper(
               audience: auth0.clientId,
               issuer: `https://${auth0.domain}/`,
             },
-            (verifyError, { sub } = {}) => {
+            (verifyError, response) => {
               if (verifyError) {
                 console.error('VerifyError', verifyError);
                 reject(new errors.Unauthorized());
               } else {
-                resolve(generatePolicy(sub, 'Allow', methodArn));
+                const context = mapValues(
+                  mapKeys(response, (value, key) => key.replace('https://onionful.com/', '')),
+                  value => (isArray(value) ? value.join() : value),
+                );
+
+                resolve(generatePolicy(response.sub, 'Allow', methodArn, context));
               }
             },
           );

@@ -4,6 +4,9 @@ import messages from './messages';
 
 export { default as uuid } from 'uuid/v4';
 export { default as db } from './db';
+export { default as Joi } from './joi';
+export { default as permissions } from './permissions';
+export { default as validators } from './validators';
 export { default as wrapper } from './wrapper';
 export { errors };
 

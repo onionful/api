@@ -1,9 +1,8 @@
-import { db } from 'utils';
+import { db, Joi } from 'utils';
 
-const { Joi, model } = db;
 export const TYPES = ['string', 'number', 'date'];
 
-export default model(
+export default db.model(
   'Collection',
   {
     space: {
