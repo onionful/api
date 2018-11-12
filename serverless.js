@@ -51,6 +51,12 @@ module.exports = {
       domainName: DOMAIN,
       stage: ENVIRONMENT,
     },
+    webpack: {
+      includeModules: true,
+      packagerOptions: {
+        scripts: ['rm -rf node_modules/aws-sdk'],
+      },
+    },
   },
   functions,
 };

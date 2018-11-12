@@ -1,9 +1,10 @@
-const path = require('path');
 const fs = require('fs');
+const HappyPack = require('happypack');
+const nodeExternals = require('webpack-node-externals');
+const os = require('os');
+const path = require('path');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
-const HappyPack = require('happypack');
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const {
@@ -21,6 +22,7 @@ const paths = {
   webpackCache: path.resolve(__dirname, '.webpack'),
 };
 
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const babelConfig = JSON.parse(fs.readFileSync(paths.babelrc));
 
 module.exports = {
@@ -37,7 +39,7 @@ module.exports = {
       deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
     },
   },
-  externals: isLocal ? [nodeExternals()] : [],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
@@ -63,6 +65,8 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new HappyPack({
+      threadPool: happyThreadPool,
+      verbose: false,
       loaders: [
         { loader: 'babel-loader', options: babelConfig, include: paths.src },
         { loader: 'eslint-loader' },
