@@ -17,9 +17,9 @@ const fixAuthorizer = fix('http.authorizer', value =>
     ? [SERVICE, value].join('-')
     : {
         arn: `arn:aws:lambda:${AWS_REGION}:${AWS_ACCOUNT_ID}:function:${SERVICE}-${value}`,
-        type: 'request',
+        type: 'token',
         name: 'authorizer',
-        identitySource: 'method.request.header.Authorizer',
+        identitySource: 'method.request.header.Authorization',
         resultTtlInSeconds: 600,
       },
 );

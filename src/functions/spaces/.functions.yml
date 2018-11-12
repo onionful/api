@@ -27,6 +27,7 @@ get:
     - http:
         path: /{id}
         method: get
+        authorizer: auth-check
         cors: true
 
 list:
@@ -34,4 +35,5 @@ list:
     - http:
         path: /
         method: get
+        authorizer: auth-check
         cors: true

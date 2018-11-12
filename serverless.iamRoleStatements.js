@@ -9,7 +9,14 @@ module.exports = [
 
   {
     Effect: 'Allow',
-    Action: ['dynamodb:DescribeTable'],
+    Action: [
+      'dynamodb:DescribeTable',
+      'dynamodb:Scan',
+      'dynamodb:GetItem',
+      'dynamodb:PutItem',
+      'dynamodb:UpdateItem',
+      'dynamodb:DeleteItem',
+    ],
     Resource: `arn:aws:dynamodb:${AWS_REGION}:${AWS_ACCOUNT_ID}:table/${ENVIRONMENT}_Onionful_*`,
   },
 ];
