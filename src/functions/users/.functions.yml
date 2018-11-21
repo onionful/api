@@ -13,3 +13,11 @@ find:
       method: get
       authorizer: auth-check
       cors: true
+
+labels:
+  events:
+  - http:
+      path: /labels/{ids}
+      method: get
+      authorizer: auth-check
+      cors: true
