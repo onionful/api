@@ -7,9 +7,7 @@ export default db.model(
       type: String,
       hashKey: true,
       required: true,
-      validator: Joi.string()
-        .token()
-        .min(3),
+      validator: Joi.id(),
     },
     id: {
       type: String,

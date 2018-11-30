@@ -7,5 +7,5 @@ export default wrapper(
       .UserAppMetadata(body)
       .then(metadata => Auth0.updateUserMetadata({ id }, metadata))
       .then(user => pick(user, userFields)),
-  { withAuth0: true, checkPermission: 'users:list' },
+  { withAuth0: true },
 );
