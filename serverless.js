@@ -2,7 +2,7 @@ const functions = require('./serverless.functions');
 const iamRoleStatements = require('./serverless.iamRoleStatements');
 
 const {
-  AWS_KMS_KEY_ARN,
+  AWS_REGION,
   FUNCTION,
   DOMAIN,
   ENVIRONMENT = 'development',
@@ -14,14 +14,11 @@ const {
 const service = [SERVICE, FUNCTION].join('-');
 
 module.exports = {
-  service: {
-    name: service,
-    awsKmsKeyArn: AWS_KMS_KEY_ARN,
-  },
+  service,
   provider: {
     name: 'aws',
     runtime: 'nodejs8.10',
-    region: 'eu-west-1',
+    region: AWS_REGION,
     stage: ENVIRONMENT,
     environment: { ENVIRONMENT },
     iamRoleStatements,

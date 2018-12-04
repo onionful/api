@@ -5,7 +5,6 @@ const os = require('os');
 const path = require('path');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
-// const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const {
   lib: {
@@ -72,6 +71,5 @@ module.exports = {
         { loader: 'eslint-loader' },
       ],
     }),
-    // new HardSourceWebpackPlugin(),
   ],
 };
