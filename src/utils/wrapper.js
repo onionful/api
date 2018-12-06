@@ -14,7 +14,6 @@ import { permissions } from 'utils';
 process.on('unhandledRejection', console.error); // print stacktrace for unhandled promises rejection
 
 const { ENVIRONMENT, IS_OFFLINE, OFFLINE_CACHE_CONTROL = 0 } = process.env;
-const SM_REGION = 'eu-west-1'; // hardcoded SecretsManager region - not available in eu-west-3 yet
 
 const transformResponse = raw => data => (raw ? data : { body: JSON.stringify(data) });
 
@@ -47,7 +46,7 @@ export default (
   if (withAuth0) {
     Object.assign(secrets, { Auth0Token: `${ENVIRONMENT}/onionful/token` });
   }
-  handler.use(secretsManager({ cache: true, awsSdkOptions: { region: SM_REGION }, secrets }));
+  handler.use(secretsManager({ cache: true, secrets }));
 
   if (withAuth0) {
     handler.before((h, next) => {
