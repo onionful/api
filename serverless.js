@@ -2,6 +2,7 @@ const functions = require('./serverless.functions');
 const iamRoleStatements = require('./serverless.iamRoleStatements');
 
 const {
+  AWS_ACCOUNT_ID,
   AWS_REGION,
   FUNCTION,
   DOMAIN,
@@ -12,6 +13,8 @@ const {
 } = process.env;
 
 const service = [SERVICE, FUNCTION].join('-');
+const domainPrefix = ENVIRONMENT === 'development' ? ['dev'] : [];
+const domainName = domainPrefix.concat(DOMAIN).join('-');
 
 module.exports = {
   service,
@@ -21,6 +24,7 @@ module.exports = {
     region: AWS_REGION,
     stage: ENVIRONMENT,
     environment: { ENVIRONMENT },
+    role: `arn:aws:iam::${AWS_ACCOUNT_ID}:role/${SERVICE}`,
     iamRoleStatements,
     apiName: service,
     stackName: service,
@@ -37,8 +41,8 @@ module.exports = {
       port: OFFLINE_PORT,
     },
     customDomain: {
+      domainName,
       basePath: FUNCTION,
-      domainName: DOMAIN,
       stage: ENVIRONMENT,
     },
     webpack: {
