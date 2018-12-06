@@ -50,7 +50,7 @@ export default wrapper(
             token,
             publicKey || rsaPublicKey,
             {
-              audience: auth0.clientId,
+              audience: auth0.audience,
               issuer: `https://${auth0.domain}/`,
             },
             (verifyError, response) => {
