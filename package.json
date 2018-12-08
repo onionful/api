@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.2.0",
-    "aws-sdk": "^2.371.0",
+    "aws-sdk": "^2.373.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-source-map-support": "^2.0.1",
