@@ -14,5 +14,5 @@ export default wrapper(
       }),
     );
   },
-  { withAuth0: true, checkPermission: 'users:find' },
+  { withAuth0: true },
 );

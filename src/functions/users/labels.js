@@ -12,5 +12,5 @@ export default wrapper(
         .map(id => `user_id:${id}`)
         .join(' OR '),
     }),
-  { withAuth0: true, checkPermission: 'users:find' },
+  { withAuth0: true },
 );

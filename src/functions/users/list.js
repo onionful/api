@@ -17,5 +17,5 @@ const pagination = ({ limit, page, sort, order, q }) =>
 export default wrapper(
   ({ queryStringParameters }, { Auth0 }) =>
     Auth0.getUsers({ ...pagination(queryStringParameters), fields: userFields.join() }),
-  { withAuth0: true, checkPermission: 'users:list' },
+  { withAuth0: true },
 );
