@@ -1,5 +1,6 @@
 const fs = require('fs');
 const HappyPack = require('happypack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const os = require('os');
 const path = require('path');
@@ -34,9 +35,6 @@ module.exports = {
     modules: [paths.src, 'node_modules'],
     extensions: ['.js'],
     symlinks: false,
-    alias: {
-      deepmerge$: path.resolve(__dirname, './node_modules/deepmerge/dist/umd.js'),
-    },
   },
   externals: [nodeExternals()],
   module: {
@@ -71,5 +69,6 @@ module.exports = {
         { loader: 'eslint-loader' },
       ],
     }),
+    new HardSourceWebpackPlugin(),
   ],
 };
