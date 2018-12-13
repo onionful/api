@@ -1,4 +1,3 @@
-/* eslint-disable */
 import dynamoose from 'dynamoose';
 import errors from 'http-errors';
 import { isFunction, isPlainObject, kebabCase, mapValues, set, toPairs } from 'lodash';
@@ -59,10 +58,7 @@ const model = (table, schema, options = {}) => {
       });
   };
 
-  return dynamoose.model(table, Schema, {
-    useDocumentTypes: true,
-    ...options,
-  });
+  return dynamoose.model(table, Schema, options);
 };
 
 export default {
