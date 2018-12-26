@@ -7,6 +7,6 @@ export default Joi.extend(joi => ({
     .regex(/^[a-z0-9-]+$/)
     .lowercase()
     .min(3)
-    .max(16)
+    .max(64)
     .truncate(),
 }));
