@@ -58,7 +58,7 @@ const model = (table, schema, options = {}) => {
       });
   };
 
-  return dynamoose.model(table, Schema, options);
+  return dynamoose.model(table, Schema, { throughput: 'ON_DEMAND', ...options });
 };
 
 export default {
