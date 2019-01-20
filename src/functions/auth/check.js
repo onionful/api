@@ -30,9 +30,7 @@ export default wrapper(
         return reject(new errors.Unauthorized());
       }
 
-      const {
-        header: { kid },
-      } = jwt.decode(token, { complete: true });
+      const { header: { kid } = {} } = jwt.decode(token, { complete: true }) || {};
 
       return jwksClient({
         cache: true,
