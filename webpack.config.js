@@ -69,6 +69,6 @@ module.exports = {
         { loader: 'eslint-loader' },
       ],
     }),
-    new HardSourceWebpackPlugin(),
+    new HardSourceWebpackPlugin({ environmentHash: { files: ['npm-shrinkwrap.json', '.env'] } }),
   ],
 };
