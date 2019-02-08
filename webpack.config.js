@@ -41,7 +41,14 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'happypack/loader',
+        enforce: 'pre',
+        use: 'happypack/loader?id=eslint',
+        include: paths.src,
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        use: 'happypack/loader?id=babel',
         include: paths.src,
         exclude: /node_modules/,
       },
@@ -62,12 +69,16 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new HappyPack({
+      id: 'eslint',
       threadPool: happyThreadPool,
       verbose: false,
-      loaders: [
-        { loader: 'babel-loader', options: babelConfig, include: paths.src },
-        { loader: 'eslint-loader' },
-      ],
+      loaders: [{ loader: 'eslint-loader' }],
+    }),
+    new HappyPack({
+      id: 'babel',
+      threadPool: happyThreadPool,
+      verbose: false,
+      loaders: [{ loader: 'babel-loader', options: babelConfig, include: paths.src }],
     }),
     new HardSourceWebpackPlugin({ environmentHash: { files: ['npm-shrinkwrap.json', '.env'] } }),
   ],

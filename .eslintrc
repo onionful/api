@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended", "plugin:jest/recommended"],
+  "extends": ["airbnb-base", "prettier", "prettier/standard", "plugin:jest/recommended"],
   "parser": "babel-eslint",
   "plugins": ["jest"],
   "env": {
@@ -11,14 +11,10 @@
   },
   "rules": {
     "comma-dangle": ["error", "always-multiline"],
-    "function-paren-newline": 0,
     "no-bitwise": 0,
     "no-console": 1,
     "no-param-reassign": ["error", { "props": false }],
-    "object-curly-newline": 0,
-    "import/prefer-default-export": 0,
-    "react/no-typos": 0,
-    "spaced-comment": 0
+    "import/prefer-default-export": 0
   },
   "settings": {
     "import/resolver": {
