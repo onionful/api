@@ -10,6 +10,8 @@ dynamoose.setDefaults({
   prefix: `${ENVIRONMENT}_Onionful_`,
 });
 
+const complexId = parts => parts.join(':');
+
 const model = (table, schema, options = {}) => {
   const handleValidators = (subschema, path = []) =>
     mapValues(subschema, (entry, key) => {
@@ -62,6 +64,7 @@ const model = (table, schema, options = {}) => {
 };
 
 export default {
-  model,
+  complexId,
   dynamoose,
+  model,
 };

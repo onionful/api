@@ -1,7 +1,14 @@
+list:
+  events:
+    - http:
+        path: /{collection}
+        method: get
+        cors: true
+
 create:
   events:
     - http:
-        path: /
+        path: /{collection}
         method: post
         authorizer: auth-check
         cors: true
@@ -9,7 +16,7 @@ create:
 update:
   events:
     - http:
-        path: /{id}
+        path: /{collection}/{id}
         method: put
         authorizer: auth-check
         cors: true
@@ -17,13 +24,6 @@ update:
 get:
   events:
     - http:
-        path: /{id}
-        method: get
-        cors: true
-
-list:
-  events:
-    - http:
-        path: /
+        path: /{collection}/{id}
         method: get
         cors: true

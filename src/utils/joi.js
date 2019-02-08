@@ -9,4 +9,13 @@ export default Joi.extend(joi => ({
     .min(3)
     .max(64)
     .truncate(),
+})).extend(joi => ({
+  name: 'complexId',
+  base: joi
+    .string()
+    .regex(/^[a-z0-9-]+:[a-z0-9-]+$/)
+    .lowercase()
+    .min(7)
+    .max(129)
+    .truncate(),
 }));

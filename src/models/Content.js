@@ -3,16 +3,16 @@ import { db, Joi } from 'utils';
 export default db.model(
   'Content',
   {
-    space: {
+    key: {
       type: String,
       hashKey: true,
       required: true,
-      validator: Joi.id(),
+      validator: Joi.complexId(),
     },
     id: {
       type: String,
       rangeKey: true,
-      required: false,
+      required: true,
       validator: Joi.id(),
     },
     data: {
