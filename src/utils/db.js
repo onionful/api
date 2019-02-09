@@ -10,7 +10,7 @@ dynamoose.setDefaults({
   prefix: `${ENVIRONMENT}_Onionful_`,
 });
 
-const complexId = parts => parts.join(':');
+const complexId = (...parts) => parts.join(':');
 
 const model = (table, schema, options = {}) => {
   const handleValidators = (subschema, path = []) =>
@@ -48,8 +48,10 @@ const model = (table, schema, options = {}) => {
         const [[key, id]] = toPairs(pair);
         const newId = normalizer(body[key]);
 
+        console.log('xxxx');
         if (!newId || id === newId) {
           // regular update, no id changed
+          console.log('body', body);
           return this.update(index, body, { condition: 'attribute_exists(id)' });
         }
 

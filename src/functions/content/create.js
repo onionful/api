@@ -11,7 +11,7 @@ export default wrapper(
     user: { id: createdBy },
   }) =>
     Content.create({
-      key: db.complexId([space, collection]),
+      key: db.complexId(space, collection),
       id: id || uuid(),
       data,
       createdBy,

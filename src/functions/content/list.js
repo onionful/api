@@ -4,7 +4,7 @@ import { parse } from './.helpers';
 
 export default wrapper(({ headers: { Space: space }, pathParameters: { collection } }) =>
   Content.query('key')
-    .eq(db.complexId([space, collection]))
+    .eq(db.complexId(space, collection))
     .exec()
     .then(items => items.map(parse)),
 );
