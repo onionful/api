@@ -27,7 +27,7 @@
     "ajv": "^6.9.1",
     "auth0": "^2.14.0",
     "axios": "^0.18.0",
-    "dynamoose": "^1.6.1",
+    "dynamoose": "^1.6.2",
     "http-errors": "^1.7.1",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.4.0",
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.3.1",
-    "aws-sdk": "^2.400.0",
+    "aws-sdk": "^2.401.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-source-map-support": "^2.0.1",
@@ -58,7 +58,7 @@
     "serverless": "^1.37.1",
     "serverless-aws-alias": "^1.7.1",
     "serverless-domain-manager": "^2.6.13",
-    "serverless-offline": "^4.4.0",
+    "serverless-offline": "^4.4.2",
     "serverless-webpack": "^5.2.0",
     "webpack": "^4.29.3",
     "webpack-node-externals": "^1.7.2"
