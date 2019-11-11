@@ -1,11 +1,8 @@
-const fs = require('fs');
-const HappyPack = require('happypack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
-const os = require('os');
 const path = require('path');
 const slsw = require('serverless-webpack');
 const webpack = require('webpack');
+const { CheckerPlugin, TsConfigPathsPlugin } = require('awesome-typescript-loader');
 
 const {
   lib: {
@@ -22,9 +19,6 @@ const paths = {
   webpackCache: path.resolve(__dirname, '.webpack'),
 };
 
-const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-const babelConfig = JSON.parse(fs.readFileSync(paths.babelrc));
-
 module.exports = {
   entry,
   target: 'node',
@@ -33,22 +27,22 @@ module.exports = {
   context: paths.context,
   resolve: {
     modules: [paths.src, 'node_modules'],
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
     symlinks: false,
+    plugins: [new TsConfigPathsPlugin()],
   },
   externals: [nodeExternals()],
   module: {
     rules: [
       {
-        test: /\.js$/,
-        enforce: 'pre',
-        use: 'happypack/loader?id=eslint',
+        test: /\.ts$/,
+        loader: 'awesome-typescript-loader',
         include: paths.src,
         exclude: /node_modules/,
       },
       {
         test: /\.js$/,
-        use: 'happypack/loader?id=babel',
+        use: 'babel-loader',
         include: paths.src,
         exclude: /node_modules/,
       },
@@ -66,20 +60,5 @@ module.exports = {
     filename: '[name].js',
     sourceMapFilename: '[file].map',
   },
-  plugins: [
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
-    new HappyPack({
-      id: 'eslint',
-      threadPool: happyThreadPool,
-      verbose: false,
-      loaders: [{ loader: 'eslint-loader' }],
-    }),
-    new HappyPack({
-      id: 'babel',
-      threadPool: happyThreadPool,
-      verbose: false,
-      loaders: [{ loader: 'babel-loader', options: babelConfig, include: paths.src }],
-    }),
-    new HardSourceWebpackPlugin({ environmentHash: { files: ['npm-shrinkwrap.json', '.env'] } }),
-  ],
+  plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false }), new CheckerPlugin()],
 };

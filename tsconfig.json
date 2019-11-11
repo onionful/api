@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "lib",
+    "baseUrl": "src",
+    "target": "es2018",
+    "lib": ["es2018"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "paths": {}
+  },
+  "include": ["src"]
+}

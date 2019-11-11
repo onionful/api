@@ -20,7 +20,7 @@ module.exports = {
   service,
   provider: {
     name: 'aws',
-    runtime: 'nodejs8.10',
+    runtime: 'nodejs10.x',
     region: AWS_REGION,
     stage: ENVIRONMENT,
     environment: { ENVIRONMENT },
@@ -30,6 +30,7 @@ module.exports = {
     stackName: service,
   },
   plugins: [
+    // 'serverless-plugin-typescript',
     'serverless-webpack',
     'serverless-offline',
     'serverless-domain-manager',
