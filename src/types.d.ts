@@ -1,3 +1,5 @@
+import { User as BaseUser } from 'auth0';
+
 export interface CollectionFiels {
   type: 'string' | 'number' | 'date';
   order: number;
@@ -18,6 +20,8 @@ export interface Content {
   createdBy: string;
 }
 
-export interface User {
-  id: string;
-}
+interface AppMetadata {}
+
+interface UserMetadata {}
+
+export interface User extends BaseUser<AppMetadata, UserMetadata> {}

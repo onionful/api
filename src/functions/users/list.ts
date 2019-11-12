@@ -25,11 +25,6 @@ const pagination = ({ limit, page, sort, order, q }: Params) =>
 
 export default wrapper<Params, User[]>(
   ({ queryStringParameters }, { Auth0 }) =>
-    Auth0.getUsers({ ...pagination(queryStringParameters), fields: userFields.join() }).then(
-      response => {
-        console.log('response', response);
-        return [];
-      },
-    ),
+    Auth0.getUsers({ ...pagination(queryStringParameters), fields: userFields.join() }),
   { withAuth0: true },
 );

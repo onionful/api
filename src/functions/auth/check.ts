@@ -1,10 +1,19 @@
 import { CustomAuthorizerEvent } from 'aws-lambda';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtHeader } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { isArray, mapKeys, mapValues } from 'lodash';
 import { errors, wrapper } from 'utils';
 
 const { IS_OFFLINE } = process.env;
+
+type TokenPayload = {
+  nonce: string;
+  iss: string;
+  sub: string;
+  aud: string;
+  iat: number;
+  exp: number;
+} & { [key: string]: string };
 
 const generatePolicy = (principalId: string, Effect: string, Resource: string, context = {}) => ({
   context,
@@ -21,7 +30,6 @@ const generatePolicy = (principalId: string, Effect: string, Resource: string, c
 exports.default = wrapper<{}, {}, {}, CustomAuthorizerEvent>(
   ({ authorizationToken, methodArn }, { config: { auth0 } }) =>
     new Promise((resolve, reject) => {
-      console.log('XXXXXXXXXXX');
       if (IS_OFFLINE) {
         return resolve(generatePolicy('offline', 'Allow', methodArn));
       }
@@ -32,8 +40,11 @@ exports.default = wrapper<{}, {}, {}, CustomAuthorizerEvent>(
         return reject(new errors.Unauthorized());
       }
 
-      // @ts-ignore
-      const { header: { kid } = {} } = jwt.decode(token, { complete: true }) || {};
+      const {
+        header: { kid },
+      } = jwt.decode(token, { complete: true }) as {
+        header: JwtHeader;
+      };
 
       return jwksClient({
         cache: true,
@@ -59,19 +70,16 @@ exports.default = wrapper<{}, {}, {}, CustomAuthorizerEvent>(
               audience: auth0.audience,
               issuer: `https://${auth0.domain}/`,
             },
-            (verifyError, response) => {
+            (verifyError, response: TokenPayload) => {
               if (verifyError) {
                 console.error('VerifyError', verifyError);
                 reject(new errors.Unauthorized());
               } else {
-                console.log('response', response);
                 const context = mapValues(
-                  // @ts-ignore
                   mapKeys(response, (value, key) => key.replace('https://onionful.com/', '')),
                   value => (isArray(value) ? value.join() : value),
                 );
 
-                // @ts-ignore
                 resolve(generatePolicy(response.sub, 'Allow', methodArn, context));
               }
             },

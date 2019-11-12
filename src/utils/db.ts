@@ -70,10 +70,8 @@ const model = <DataSchema, KeySchema>(
         // @ts-ignore
         const newId = normalizer(body[key]);
 
-        console.log('xxxx');
         if (!newId || id === newId) {
           // regular update, no id changed
-          console.log('body', body);
           return this.update(index, body, { condition: 'attribute_exists(id)' });
         }
 

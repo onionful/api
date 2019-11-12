@@ -24,6 +24,9 @@ interface WrapperOptions {
 
 interface Context extends BaseContext {
   Auth0: ManagementClient;
+  Auth0Token: {
+    token: string;
+  };
   config: {
     auth0: {
       jwksUri: string;
@@ -44,8 +47,17 @@ interface User {
   groups: string[];
 }
 
-const transformResponse = (raw: boolean) => <T>(data: T): T | APIGatewayProxyResult =>
-  raw ? data : { statusCode: 200, body: JSON.stringify(data) };
+const transformResponse = (raw: boolean) => <T>(
+  data: T | Promise<T>,
+): Promise<T | APIGatewayProxyResult> =>
+  Promise.resolve(data).then(response =>
+    raw
+      ? response
+      : {
+          statusCode: 200,
+          body: JSON.stringify(response),
+        },
+  );
 
 const wrapper = <
   Params extends {},
@@ -65,13 +77,10 @@ const wrapper = <
     withConfig = false,
   }: Partial<WrapperOptions> = {},
 ) => {
-  console.log('rawResponse', rawResponse);
-  const handler = middy((event: Event, context: Context) =>
-    Promise.resolve(transformResponse(rawResponse)(fn(event, context))),
-  );
-  // const handler = middy((...args) =>
-  //   Promise.resolve(fn(...args)).then(transformResponse(rawResponse)),
-  // )
+  const handler = middy<
+    (event: Event, context: Context) => Promise<Response | APIGatewayProxyResult>,
+    Context
+  >((event, context) => transformResponse(rawResponse)(fn(event, context)));
   handler
     .use(httpCors())
     .use(httpEventNormalizer())
@@ -91,30 +100,35 @@ const wrapper = <
     next();
   });
 
-  // const secrets = {};
-  // if (withConfig || withAuth0) {
-  //   Object.assign(secrets, { config: `${ENVIRONMENT}/onionful` });
-  // }
-  // if (withAuth0) {
-  //   Object.assign(secrets, { Auth0Token: `${ENVIRONMENT}/onionful/token` });
-  // }
-  // handler.use(secretsManager({ cache: true, secrets }));
-  //
-  // if (withAuth0) {
-  //   handler.before((h, next) => {
-  //     // @ts-ignore
-  //     const { config: { auth0: { domain } = {} } = {}, Auth0Token: { token } = {} } = h.context;
-  //     const Auth0 = token && domain ? new ManagementClient({ token, domain }) : null;
-  //     Object.assign(h.context, { Auth0 });
-  //
-  //     if (!Auth0) {
-  //       throw new errors.Unauthorized('Auth0 client cannot be initialized');
-  //     }
-  //
-  //     next();
-  //   });
-  // }
-  //
+  const secrets = {};
+  if (withConfig || withAuth0) {
+    Object.assign(secrets, { config: `${ENVIRONMENT}/onionful` });
+  }
+  if (withAuth0) {
+    Object.assign(secrets, { Auth0Token: `${ENVIRONMENT}/onionful/token` });
+  }
+  handler.use(secretsManager({ cache: true, secrets }));
+
+  if (withAuth0) {
+    handler.before((h, next) => {
+      const {
+        config: {
+          auth0: { domain },
+        },
+        Auth0Token: { token },
+      } = h.context as Context; // @TODO remove when https://github.com/middyjs/middy/pull/422 merged
+
+      const Auth0 = token && domain ? new ManagementClient({ token, domain }) : null;
+      Object.assign(h.context, { Auth0 });
+
+      if (!Auth0) {
+        throw new errors.Unauthorized('Auth0 client cannot be initialized');
+      }
+
+      next();
+    });
+  }
+
   // if (checkPermission) {
   //   // @ts-ignore
   //   handler.before(({ event: { user } }, next) => {
@@ -125,34 +139,36 @@ const wrapper = <
   //     throw new errors.Unauthorized(`User has no permission to invoke: ${checkPermission}`);
   //   });
   // }
+
+  handler.onError((h, next) => {
+    const { statusCode: status, code: codeName, name, message } = h.error as Error & {
+      statusCode?: string;
+      code?: number;
+    };
+
+    const code = codeName || name;
+    const statusCode = +status || (code === 'ValidationError' && 400) || 500;
+    const body = { statusCode, code, message };
+
+    console.error(body);
+    h.response = Object.assign(h.response || {}, {
+      statusCode,
+      body: JSON.stringify(body),
+    });
+
+    next();
+  });
+
+  // handler.after((h, next) => {
+  //   if (IS_OFFLINE) {
+  //     // @ts-ignore
+  //     h.response.headers = h.response.headers || {};
+  //     // @ts-ignore
+  //     h.response.headers['Cache-Control'] = `max-age=${OFFLINE_CACHE_CONTROL}`;
+  //   }
   //
-  // // handler.onError((h, next) => {
-  // //   // @ts-ignore
-  // //   const { statusCode: status, code: codeName, name, message } = h.error;
-  // //   const code = codeName || name;
-  // //   const statusCode = status || (code === 'ValidationError' && 400) || 500;
-  // //   const body = { statusCode, code, message };
-  // //
-  // //   console.error(body);
-  // //   // @ts-ignore
-  // //   h.response = Object.assign(h.response || {}, {
-  // //     statusCode,
-  // //     body: JSON.stringify(body),
-  // //   });
-  // //
-  // //   next();
-  // // });
-  // //
-  // // handler.after((h, next) => {
-  // //   if (IS_OFFLINE) {
-  // //     // @ts-ignore
-  // //     h.response.headers = h.response.headers || {};
-  // //     // @ts-ignore
-  // //     h.response.headers['Cache-Control'] = `max-age=${OFFLINE_CACHE_CONTROL}`;
-  // //   }
-  // //
-  // //   next();
-  // // });
+  //   next();
+  // });
 
   return handler;
 };
